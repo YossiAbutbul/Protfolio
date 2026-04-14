@@ -8,16 +8,8 @@ export interface InkRevealProps {
   alt: string;
   width: number;
   height: number;
-  accent?: string;
 }
 
-/**
- * Per-image reveal container. CSS-driven: image starts blurred + a noise/
- * vignette grain layer sits on top, both transition out when the card crosses
- * 15% into the viewport. Robust across nav and reduced-motion. The WebGL
- * shader variant lives in `InkRevealScene.tsx` (currently unused — keep for
- * future opt-in use as an accent overlay, never as the only image source).
- */
 export default function InkReveal(props: InkRevealProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);

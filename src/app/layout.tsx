@@ -5,7 +5,8 @@ import "./globals.css";
 import Nav from "@/components/layout/Nav";
 import SkipToContent from "@/components/layout/SkipToContent";
 import SmoothScroll from "@/components/layout/SmoothScroll";
-import LiquidCursor from "@/components/fx/LiquidCursor";
+import FollowerDot from "@/components/fx/FollowerDot";
+import BackToTop from "@/components/ui/BackToTop";
 import BootLog from "@/components/fx/BootLog";
 
 const fraunces = Fraunces({
@@ -76,7 +77,8 @@ export default function RootLayout({
           <Nav />
           <main id="main">{children}</main>
         </SmoothScroll>
-        <LiquidCursor />
+        <BackToTop />
+        <FollowerDot />
         <BootLog />
       </body>
     </html>

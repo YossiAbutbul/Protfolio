@@ -1,13 +1,20 @@
 .wrap {
+  position: sticky;
+  top: 68px;
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: var(--space-4);
   margin-bottom: var(--space-6);
+  padding: 10px 0;
   font-family: var(--font-mono);
   font-size: var(--step--1);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--fg-muted);
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.92) 70%, rgba(5, 5, 5, 0) 100%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .index {

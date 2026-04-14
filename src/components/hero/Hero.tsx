@@ -19,7 +19,7 @@ export default function Hero() {
         </div>
         <p className={styles.subtitle}>Building software where signals meet code.</p>
         <p className={styles.meta}>
-          CS student at The Open Univerisy <span aria-hidden="true">·</span> RF integrator
+          CS student at The Open University <span aria-hidden="true">·</span> Innovating with AI
         </p>
         <p className={styles.scrollCue} aria-hidden="true">
           scroll ↓

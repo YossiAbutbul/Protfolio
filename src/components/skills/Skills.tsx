@@ -1,26 +1,20 @@
+import { Fragment } from "react";
 import SectionLabel from "@/components/ui/SectionLabel";
 import styles from "./Skills.module.css";
 
-const SW_GROUPS = [
-  {
-    label: "Languages",
-    items: ["TypeScript", "JavaScript", "Python", "C (ANSI C90)"],
-  },
-  {
-    label: "Frontend",
-    items: ["React", "Responsive UI", "Chart.js", "Plotly"],
-  },
-  {
-    label: "Backend",
-    items: ["FastAPI", "REST APIs", "Firebase"],
-  },
-  {
-    label: "Tools",
-    items: ["Git", ".NET DLL interop"],
-  },
+interface Group {
+  label: string;
+  items: string[];
+}
+
+const SW_GROUPS: Group[] = [
+  { label: "Languages", items: ["TypeScript", "JavaScript", "Python", "C (ANSI C90)"] },
+  { label: "Frontend", items: ["React", "Responsive UI", "Chart.js", "Plotly"] },
+  { label: "Backend", items: ["FastAPI", "REST APIs", "Firebase"] },
+  { label: "Tools", items: ["Git", ".NET DLL interop"] },
 ];
 
-const HW_GROUPS = [
+const HW_GROUPS: Group[] = [
   {
     label: "RF systems",
     items: [
@@ -44,7 +38,39 @@ const HW_GROUPS = [
   },
 ];
 
+const MARQUEE = [
+  "TypeScript",
+  "React",
+  "Python",
+  "C / ANSI C90",
+  "FastAPI",
+  "RF Integration",
+  "Spectrum Analysis",
+  "Signal Debug",
+  "FEM",
+  "LoRa",
+  "NB-IoT",
+  "Bluetooth",
+  "Python Automation",
+  ".NET Interop",
+  "Firebase",
+];
+
+const ROWS = SW_GROUPS.map((sw, i) => ({ sw, hw: HW_GROUPS[i] }));
+
 export default function Skills() {
+  let swIdx = 0;
+  let hwIdx = 0;
+
+  const swChip = (it: string) => {
+    swIdx += 1;
+    return <Chip key={`sw-${it}`} label={it} index={swIdx.toString().padStart(2, "0")} />;
+  };
+  const hwChip = (it: string) => {
+    hwIdx += 1;
+    return <Chip key={`hw-${it}`} label={it} index={hwIdx.toString().padStart(2, "0")} />;
+  };
+
   return (
     <section id="skills" className={styles.section} aria-labelledby="skills-label">
       <div className="container">
@@ -52,49 +78,52 @@ export default function Skills() {
           <SectionLabel index="03">Capabilities</SectionLabel>
         </div>
 
-        <div className={styles.grid}>
-          <div data-reveal data-reveal-delay="1">
-            <Column title=".text" subtitle="Software" groups={SW_GROUPS} />
+        <div className={styles.marquee} data-reveal data-reveal-delay="1" aria-hidden="true">
+          <div className={styles.marqueeTrack}>
+            {[...MARQUEE, ...MARQUEE].map((m, i) => (
+              <span key={`${m}-${i}`} className={styles.marqueeItem}>
+                {m}
+                <span className={styles.marqueeDot}>·</span>
+              </span>
+            ))}
           </div>
-          <div data-reveal data-reveal-delay="2">
-            <Column title=".data" subtitle="Hardware / Embedded" groups={HW_GROUPS} />
-          </div>
+        </div>
+
+        <div className={styles.table} data-reveal data-reveal-delay="2">
+          <header className={styles.cellHead}>
+            <span className={styles.colKey}>K-01</span>
+            <h3 className={styles.colTitle}>Software</h3>
+          </header>
+          <header className={`${styles.cellHead} ${styles.cellHeadR}`}>
+            <span className={styles.colKey}>K-02</span>
+            <h3 className={styles.colTitle}>Hardware / Embedded</h3>
+          </header>
+
+          {ROWS.map((row, i) => (
+            <Fragment key={i}>
+              <div className={styles.cell}>
+                <span className={styles.cellLabel}>{row.sw.label}</span>
+                <div className={styles.cellChips}>{row.sw.items.map(swChip)}</div>
+              </div>
+              <div className={`${styles.cell} ${styles.cellR}`}>
+                <span className={styles.cellLabel}>{row.hw.label}</span>
+                <div className={styles.cellChips}>{row.hw.items.map(hwChip)}</div>
+              </div>
+            </Fragment>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function Column({
-  title,
-  subtitle,
-  groups,
-}: {
-  title: string;
-  subtitle: string;
-  groups: { label: string; items: string[] }[];
-}) {
+function Chip({ label, index }: { label: string; index: string }) {
   return (
-    <div className={styles.col}>
-      <header className={styles.colHead}>
-        <span className={styles.section_marker}>{title}</span>
-        <h3 className={styles.colTitle}>{subtitle}</h3>
-      </header>
-      <dl className={styles.list}>
-        {groups.map((g) => (
-          <div key={g.label} className={styles.group}>
-            <dt>{g.label}</dt>
-            <dd>
-              {g.items.map((it, i) => (
-                <span key={it}>
-                  {it}
-                  {i < g.items.length - 1 && <span aria-hidden="true"> · </span>}
-                </span>
-              ))}
-            </dd>
-          </div>
-        ))}
-      </dl>
-    </div>
+    <span className={styles.chip} tabIndex={0}>
+      <span className={styles.chipText}>{label}</span>
+      <span className={styles.chipIndex} aria-hidden="true">
+        {index}
+      </span>
+    </span>
   );
 }

@@ -6,6 +6,8 @@ import { PROJECTS, getAllSlugs, getProjectBySlug } from "@content/projects";
 import InkReveal from "@/components/fx/InkReveal";
 import TagPill from "@/components/projects/TagPill";
 import Fiducial from "@/components/ui/Fiducial";
+import ReadingProgress from "@/components/ui/ReadingProgress";
+import Toc from "@/components/ui/Toc";
 import { withBasePath } from "@/lib/env";
 
 import ReportGeneratorBody from "@content/projects/report-generator.mdx";
@@ -66,6 +68,7 @@ export default async function ProjectDetail({
 
   return (
     <article className={styles.page}>
+      <ReadingProgress />
       <Fiducial corner="tl" />
       <Fiducial corner="tr" />
       <header className={styles.header}>
@@ -82,6 +85,23 @@ export default async function ProjectDetail({
 
           <h1 className={styles.title}>{project.title}</h1>
           <p className={styles.summary}>{project.summary}</p>
+
+          <div className={styles.metaBand}>
+            <div className={styles.metaCell}>
+              <span className={styles.metaLabel}>Year</span>
+              <span className={styles.metaValue}>{project.year}</span>
+            </div>
+            <div className={styles.metaCell}>
+              <span className={styles.metaLabel}>Discipline</span>
+              <span className={styles.metaValue}>
+                {project.tags.map((t) => TAG_LABEL[t]).join(" · ")}
+              </span>
+            </div>
+            <div className={styles.metaCell}>
+              <span className={styles.metaLabel}>Stack</span>
+              <span className={styles.metaValue}>{project.stack.join(" · ")}</span>
+            </div>
+          </div>
 
           <div className={styles.metaRow}>
             <ul className={styles.tags} aria-label="Disciplines">
@@ -125,12 +145,13 @@ export default async function ProjectDetail({
 
       <section className={styles.body}>
         <div className="container">
-          <div className={`content ${styles.prose}`}>
-            <p className={styles.stack}>
-              <span className={styles.stackLabel}>Stack</span>
-              {project.stack.join(" · ")}
-            </p>
-            {Body && <Body />}
+          <div className={styles.layout}>
+            <aside className={styles.sidebar}>
+              <Toc scopeSelector=".content" />
+            </aside>
+            <div className={`content ${styles.prose}`}>
+              {Body && <Body />}
+            </div>
           </div>
         </div>
       </section>
@@ -138,17 +159,39 @@ export default async function ProjectDetail({
       <nav className={styles.foot} aria-label="Project navigation">
         <div className="container">
           <div className={styles.footGrid}>
-            <Link href={`/projects/${prev.slug}/`} className={styles.footLink}>
-              <span className={styles.footDir}>← previous</span>
-              <span className={styles.footTitle}>{prev.title}</span>
-            </Link>
-            <Link href={`/projects/${next.slug}/`} className={`${styles.footLink} ${styles.footRight}`}>
-              <span className={styles.footDir}>next →</span>
-              <span className={styles.footTitle}>{next.title}</span>
-            </Link>
+            <PrevNextCard direction="prev" project={prev} />
+            <PrevNextCard direction="next" project={next} />
           </div>
         </div>
       </nav>
     </article>
+  );
+}
+
+function PrevNextCard({
+  direction,
+  project,
+}: {
+  direction: "prev" | "next";
+  project: (typeof PROJECTS)[number];
+}) {
+  const img = project.images[0];
+  const label = direction === "prev" ? "← Previous" : "Next →";
+  return (
+    <Link
+      href={`/projects/${project.slug}/`}
+      className={`${styles.footLink} ${direction === "next" ? styles.footRight : ""}`}
+    >
+      <span className={styles.footDir}>{label}</span>
+      <div className={styles.footThumb}>
+        <InkReveal
+          src={withBasePath(img.src)}
+          alt={img.alt}
+          width={img.width}
+          height={img.height}
+        />
+      </div>
+      <span className={styles.footTitle}>{project.title}</span>
+    </Link>
   );
 }

@@ -3,8 +3,29 @@ import Fiducial from "@/components/ui/Fiducial";
 import { withBasePath } from "@/lib/env";
 import styles from "./Contact.module.css";
 
-const LINKS: { label: string; href: string; display: string; newTab?: boolean }[] = [
-  { label: "Email", href: "mailto:abyossi22@gmail.com", display: "abyossi22@gmail.com" },
+const EMAIL = "abyossi22@gmail.com";
+const EMAIL_SUBJECT = "New signal — from your portfolio";
+const EMAIL_BODY = [
+  "Hi Yossi,",
+  "",
+  "I came across your portfolio and wanted to reach out.",
+  "",
+  "—",
+  "",
+].join("\r\n");
+const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(
+  EMAIL_BODY,
+)}`;
+
+interface LinkRow {
+  label: string;
+  href: string;
+  display: string;
+  meta?: string;
+  newTab?: boolean;
+}
+
+const LINKS: LinkRow[] = [
   { label: "Phone", href: "tel:+972525476603", display: "+972 52-547-6603" },
   { label: "GitHub", href: "https://github.com/YossiAbutbul", display: "@YossiAbutbul" },
   {
@@ -12,7 +33,13 @@ const LINKS: { label: string; href: string; display: string; newTab?: boolean }[
     href: "https://www.linkedin.com/in/yossi-abutbul-550958199/",
     display: "yossi-abutbul",
   },
-  { label: "CV", href: withBasePath("/cv.pdf"), display: "Open PDF ↗", newTab: true },
+  {
+    label: "CV",
+    href: withBasePath("/cv.pdf"),
+    display: "Open PDF",
+    meta: "PDF",
+    newTab: true,
+  },
 ];
 
 export default function Contact() {
@@ -34,6 +61,19 @@ export default function Contact() {
           Open to internships, freelance, collaborations, and RF / embedded engineering work.
         </p>
 
+        <p className={styles.cta} data-reveal data-reveal-delay="3">
+          <span className={styles.ctaPrefix}>Write me at </span>
+          <a
+            className={styles.ctaLink}
+            href={MAILTO}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            {EMAIL}
+          </a>
+          <span className={styles.ctaDot} aria-hidden="true">.</span>
+        </p>
+
         <ul className={styles.list}>
           {LINKS.map((l, i) => (
             <li
@@ -44,13 +84,15 @@ export default function Contact() {
             >
               <span className={styles.rowLabel}>{l.label}</span>
               <a
-                className={`link-inline ${styles.rowValue}`}
+                className={styles.rowValue}
                 href={l.href}
                 {...(l.href.startsWith("http") || l.newTab
                   ? { target: "_blank", rel: "noreferrer noopener" }
                   : {})}
               >
-                {l.display}
+                <span className={styles.rowText}>{l.display}</span>
+                {l.meta && <span className={styles.rowMeta}>[ {l.meta} ]</span>}
+                <span className={styles.rowArrow} aria-hidden="true">→</span>
               </a>
             </li>
           ))}
@@ -60,7 +102,7 @@ export default function Contact() {
           <p>
             <span className={styles.footMono}>© {new Date().getFullYear()} Yossi Abutbul</span>
             <span aria-hidden="true"> · </span>
-            <span className={styles.footMono}>built with Next.js, three.js, and Lenis</span>
+            <span className={styles.footMono}>built with Next.js, GSAP, and Lenis</span>
           </p>
         </footer>
       </div>

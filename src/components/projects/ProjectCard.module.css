@@ -57,10 +57,22 @@
 .title {
   font-family: var(--font-serif);
   font-size: var(--step-3);
-  font-variation-settings: "wght" 420, "opsz" 72;
+  font-variation-settings: "wght" 420, "opsz" 72, "SOFT" 20;
   line-height: 1.05;
   letter-spacing: -0.02em;
   margin: 0;
+  transition: font-variation-settings var(--dur-med) var(--ease-out);
+}
+
+.card:hover .title,
+.card:focus-within .title {
+  font-variation-settings: "wght" 620, "opsz" 96, "SOFT" 80;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title {
+    transition: none;
+  }
 }
 
 .titleLink {

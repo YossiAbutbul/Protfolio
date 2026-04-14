@@ -16,22 +16,18 @@
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
     "@next/mdx": "^15.1.0",
-    "@react-three/drei": "^10.0.0",
-    "@react-three/fiber": "^9.0.0",
     "clsx": "^2.1.1",
     "gsap": "^3.12.5",
     "lenis": "^1.1.14",
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "three": "^0.170.0"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/mdx": "^2.0.13",
     "@types/node": "^22.9.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@types/three": "^0.170.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "^15.1.0",
     "prettier": "^3.3.3",

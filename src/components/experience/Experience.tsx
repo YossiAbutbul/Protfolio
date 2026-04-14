@@ -3,18 +3,22 @@ import styles from "./Experience.module.css";
 
 interface TimelineItem {
   period: string;
+  year: string;
   org: string;
   role: string;
   bullets: string[];
   kind: "work" | "education" | "service";
+  current?: boolean;
 }
 
 const ITEMS: TimelineItem[] = [
   {
     period: "May 2020 — Present",
+    year: "2020 —",
     org: "Arad Technologies",
     role: "RF & Electronics Integrator",
     kind: "work",
+    current: true,
     bullets: [
       "Designed a React + FastAPI platform to automate RF testing over Bluetooth, integrating Power and Spectrum Analyzers for real-time measurement, analysis, and report generation.",
       "Built a web interface for interactive visualization of antenna radiation patterns and RF performance metrics.",
@@ -24,9 +28,11 @@ const ITEMS: TimelineItem[] = [
   },
   {
     period: "Oct 2022 — Present",
+    year: "2022 —",
     org: "The Open University",
     role: "BSc Computer Science (GPA 88)",
     kind: "education",
+    current: true,
     bullets: [
       "Coursework focus on systems programming, algorithms, and architecture.",
       "Capstone: Two-pass assembler (ANSI C90) translating into base-4 machine code.",
@@ -34,6 +40,7 @@ const ITEMS: TimelineItem[] = [
   },
   {
     period: "Apr 2017 — Dec 2019",
+    year: "2017 – 19",
     org: "IDF · Intelligence Corps · Unit 81",
     role: "Operational Project Leader · RF Technician",
     kind: "service",
@@ -70,11 +77,15 @@ export default function Experience() {
               data-reveal
               data-reveal-delay={(((i % 3) + 1)).toString()}
             >
-              <div className={styles.railCol}>
-                <span className={styles.dot} aria-hidden="true" />
-                <span className={styles.kind}>{KIND_LABEL[it.kind]}</span>
+              <div className={styles.metaCol}>
+                <span className={styles.year}>{it.year}</span>
+                <span
+                  className={`${styles.dot} ${it.current ? styles.dotPulse : ""}`}
+                  aria-hidden="true"
+                />
+                <span className={styles.kind}>[ {KIND_LABEL[it.kind]} ]</span>
               </div>
-              <div>
+              <div className={styles.body}>
                 <p className={styles.period}>{it.period}</p>
                 <h3 className={styles.role}>{it.role}</h3>
                 <p className={styles.org}>{it.org}</p>

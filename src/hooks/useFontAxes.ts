@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { prefersReducedMotion } from "@/hooks/useReducedMotion";
 
 export interface FontAxes {
   wght: number; // 100..900
@@ -50,8 +51,7 @@ export function useFontAxes(
     const el = ref.current;
     if (!el) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
+    if (prefersReducedMotion()) {
       el.style.fontVariationSettings = formatAxes(DEFAULT);
       return;
     }
