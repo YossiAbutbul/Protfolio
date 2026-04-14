@@ -1,0 +1,20 @@
+## The problem
+
+RF integration labs live on spreadsheets. Power and spectrum measurements arrive as lab exports, get copy-pasted into Word templates, and days go by before anyone sees a report. Mistakes hide in the gaps between instruments, engineers, and slide decks.
+
+## What I built
+
+A full-stack platform that automates the whole pipeline: a React + TypeScript frontend talks to a Python FastAPI backend, which in turn drives Power and Spectrum Analyzers over Bluetooth. Measurements stream in real time, get analyzed, and come out the other end as structured reports with embedded 3D visualizations.
+
+## Highlights
+
+- **Bluetooth instrument control** — dispatched from a FastAPI service, with retry + timeout around flaky lab hardware.
+- **Real-time plots** — React + Plotly; the moment a sweep completes, the engineer sees the curve.
+- **Report generation** — template-driven export with 3D radiation-pattern figures baked in; a report that used to take half a day now takes minutes.
+- **Reusable React components** — filters, instrument panels, plot wrappers, designed to outlive the first version of the tool.
+
+## What I learned
+
+- Hardware is unreliable in specific, named ways. The UI has to treat timeouts, stale caches, and half-connected devices as first-class states, not exceptions.
+- A good data schema beats a clever one. Every feature I retrofitted later hinged on the measurement model I committed to in week two.
+- "Engineering workflow optimization" sounds abstract until someone on the bench tells you they got their evenings back.

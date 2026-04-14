@@ -1,0 +1,11 @@
+.fiducial {
+  position: absolute;
+  color: var(--accent);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.tl { top: var(--space-4); left: var(--space-4); }
+.tr { top: var(--space-4); right: var(--space-4); }
+.bl { bottom: var(--space-4); left: var(--space-4); }
+.br { bottom: var(--space-4); right: var(--space-4); }

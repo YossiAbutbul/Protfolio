@@ -1,0 +1,39 @@
+# deps
+node_modules/
+.pnp
+.pnp.js
+
+# next
+.next/
+out/
+next-env.d.ts
+
+# env
+.env*
+!.env.example
+
+# build + coverage
+build/
+coverage/
+*.tsbuildinfo
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# system
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+*.swp
+
+# vercel (we don't deploy there, but keep clean)
+.vercel
+
+# claude worktrees + local config
+.claude/
