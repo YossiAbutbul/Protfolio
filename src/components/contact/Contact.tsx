@@ -3,7 +3,7 @@ import Fiducial from "@/components/ui/Fiducial";
 import { withBasePath } from "@/lib/env";
 import styles from "./Contact.module.css";
 
-const LINKS = [
+const LINKS: { label: string; href: string; display: string; newTab?: boolean }[] = [
   { label: "Email", href: "mailto:abyossi22@gmail.com", display: "abyossi22@gmail.com" },
   { label: "Phone", href: "tel:+972525476603", display: "+972 52-547-6603" },
   { label: "GitHub", href: "https://github.com/YossiAbutbul", display: "@YossiAbutbul" },
@@ -12,7 +12,7 @@ const LINKS = [
     href: "https://www.linkedin.com/in/yossi-abutbul-550958199/",
     display: "yossi-abutbul",
   },
-  { label: "CV", href: withBasePath("/cv.pdf"), display: "Download PDF ↗" },
+  { label: "CV", href: withBasePath("/cv.pdf"), display: "Open PDF ↗", newTab: true },
 ];
 
 export default function Contact() {
@@ -46,7 +46,7 @@ export default function Contact() {
               <a
                 className={`link-inline ${styles.rowValue}`}
                 href={l.href}
-                {...(l.href.startsWith("http")
+                {...(l.href.startsWith("http") || l.newTab
                   ? { target: "_blank", rel: "noreferrer noopener" }
                   : {})}
               >
