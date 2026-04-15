@@ -20,7 +20,6 @@ function slugify(s: string): string {
 export default function Toc({ scopeSelector = ".content" }: { scopeSelector?: string }) {
   const [items, setItems] = useState<TocItem[]>([]);
   const [active, setActive] = useState<string | null>(null);
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const scope = document.querySelector(scopeSelector);
@@ -33,7 +32,7 @@ export default function Toc({ scopeSelector = ".content" }: { scopeSelector?: st
     setItems(list);
     if (list[0]) setActive(list[0].id);
 
-    const headingIo = new IntersectionObserver(
+    const io = new IntersectionObserver(
       (entries) => {
         const vis = entries
           .filter((e) => e.isIntersecting)
@@ -42,27 +41,14 @@ export default function Toc({ scopeSelector = ".content" }: { scopeSelector?: st
       },
       { rootMargin: "-30% 0px -55% 0px", threshold: [0, 0.2, 0.6] },
     );
-    headings.forEach((h) => headingIo.observe(h));
-
-    const scopeIo = new IntersectionObserver(
-      (entries) => setVisible(entries[0]?.isIntersecting ?? false),
-      { rootMargin: "-80px 0px -20% 0px" },
-    );
-    scopeIo.observe(scope);
-
-    return () => {
-      headingIo.disconnect();
-      scopeIo.disconnect();
-    };
+    headings.forEach((h) => io.observe(h));
+    return () => io.disconnect();
   }, [scopeSelector]);
 
   if (items.length < 2) return null;
 
   return (
-    <nav
-      className={`${styles.toc} ${visible ? styles.visible : ""}`}
-      aria-label="Table of contents"
-    >
+    <nav className={styles.toc} aria-label="Table of contents">
       <p className={styles.label}>Contents</p>
       <ol className={styles.list}>
         {items.map((it, i) => (

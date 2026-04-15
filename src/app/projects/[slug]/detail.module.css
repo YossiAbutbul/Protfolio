@@ -149,10 +149,24 @@
   padding: var(--space-7) 0;
 }
 
-/* Prose shifts right on wide screens to leave room for fixed TOC. */
-@media (min-width: 1200px) {
-  .body .prose {
-    margin-left: 240px;
+.bodyGrid {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: stretch;
+}
+
+.bodySidebar {
+  min-width: 0;
+  align-self: stretch;
+}
+
+@media (max-width: 1200px) {
+  .bodyGrid {
+    grid-template-columns: 1fr;
+  }
+  .bodySidebar {
+    display: none;
   }
 }
 
