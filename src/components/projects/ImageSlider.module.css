@@ -11,6 +11,16 @@
   cursor: pointer;
 }
 
+.draggable {
+  cursor: grab;
+  /* let browser handle vertical scroll; JS handles horizontal */
+  touch-action: pan-y;
+}
+
+.draggable:active {
+  cursor: grabbing;
+}
+
 /* ── Sliding track ───────────────────────── */
 .track {
   display: flex;

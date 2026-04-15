@@ -8,10 +8,11 @@ export const PROJECTS: Project[] = [
       "Full-stack RF test-automation platform. Captures measurements, and generates structured reports with 3D analysis. Cut lab reporting time by 50%+.",
     tags: ["software", "hardware", "embedded"],
     year: 2024,
-    role: "Solo — architecture, frontend, API, device integration",
+    role: "architecture, frontend, API, device integration",
     stack: ["React", "TypeScript", "Python", "FastAPI", "Plotly"],
     links: [
       { label: "GitHub", href: "https://github.com/YossiAbutbul/ReportGenrator" },
+      { label: "Live Demo", href: "https://yossiabutbul.github.io/ReportGenrator/" },
     ],
     images: [
       {
@@ -50,7 +51,10 @@ export const PROJECTS: Project[] = [
     year: 2024,
     role: "Solo",
     stack: ["React", "TypeScript", "Vite"],
-    links: [{ label: "GitHub", href: "https://github.com/YossiAbutbul/Pipeline_CPU" }],
+    links: [
+      { label: "GitHub", href: "https://github.com/YossiAbutbul/Pipeline_CPU" },
+      { label: "Live Demo", href: "https://yossiabutbul.github.io/Pipeline_CPU/" },
+    ],
     images: [
       {
         src: "/projects/pipeline-cpu/01-Pipeline-CPU-Diagram.png",
@@ -68,7 +72,7 @@ export const PROJECTS: Project[] = [
       "ANSI C90 compiler-like assembler. Two-stage: symbol-table build, then instruction parsing and base-4 machine-code emission. Built for the Systems Programming Laboratory course.",
     tags: ["software", "embedded"],
     year: 2023,
-    role: "Solo — coursework",
+    role: "coursework",
     stack: ["C (ANSI C90)", "Make", "GDB"],
     links: [{ label: "GitHub", href: "https://github.com/YossiAbutbul/Assembler" }],
     images: [

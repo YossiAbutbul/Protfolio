@@ -17,6 +17,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
+  min-width: 0;
 }
 
 .monogram {
@@ -136,21 +137,25 @@
   gap: 5px;
   cursor: pointer;
   color: var(--fg);
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .menuBar {
   display: block;
   width: 16px;
-  height: 1px;
+  height: 1.5px;
   background: currentColor;
+  border-radius: 1px;
   transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
 }
 
+/* gap=5px + bar=1.5px → centre offset = (5+1.5)/2 = 3.25px */
 .menuBarOpen:first-child {
-  transform: translateY(3px) rotate(45deg);
+  transform: translateY(3.25px) rotate(45deg);
 }
 .menuBarOpen:last-child {
-  transform: translateY(-3px) rotate(-45deg);
+  transform: translateY(-3.25px) rotate(-45deg);
 }
 
 @media (max-width: 640px) {

@@ -124,6 +124,7 @@ export default async function ProjectDetail({
               images={project.images}
               autoPlay
               interval={3000}
+              drag
             />
           </div>
           <figcaption className={styles.cap}>{project.images[0].alt}</figcaption>

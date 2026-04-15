@@ -8,23 +8,16 @@ import styles from "./ImageSlider.module.css";
 
 interface Props {
   images: ProjectImage[];
-  /** Always auto-play regardless of hover (detail page). Default: hover-only. */
   autoPlay?: boolean;
-  /** Apply dark/grayscale theme filter, removed on hover (cards). */
   filter?: boolean;
-  /** If set, clicking the image navigates to this project slug. */
   slug?: string;
-  /** ms between slides. Default 2200. */
   interval?: number;
+  drag?: boolean;
 }
 
 const DEFAULT_INTERVAL = 2200;
+const DRAG_THRESHOLD = 50;
 
-// padding-block percentages are relative to *inline size* (width).
-// For object-fit:contain to fill the full width with no side gaps,
-// the content area (height minus padding) must match the image's native ratio.
-// Solving for wrapper_h:  img_w/(wrapper_h − 2p·wrapper_w) = img_w/img_h
-//   →  wrapper_h = img_h + 2·p·img_w
 const PADDING = 0.04;
 function calcRatio(w: number, h: number) {
   return `${w} / ${Math.round(h + 2 * PADDING * w)}`;
@@ -36,25 +29,44 @@ export default function ImageSlider({
   filter = false,
   slug,
   interval = DEFAULT_INTERVAL,
+  drag = false,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [idx, setIdx] = useState(0);
   const [hovered, setHovered] = useState(false);
-  const [revealed, setRevealed] = useState(!filter); // detail page: always revealed
+  const [revealed, setRevealed] = useState(!filter);
   const router = useRouter();
 
   const total = images.length;
-  const firstImg = images[0];
+  const canLoop = total > 1;
 
-  // Use the known data dimensions immediately — no flash, no waiting for onLoad
+  // [clone-last, img0 … imgN-1, clone-first]
+  const extImages: ProjectImage[] = canLoop
+    ? [images[total - 1], ...images, images[0]]
+    : images;
+
+  const [trackIdx, setTrackIdx] = useState(canLoop ? 1 : 0);
+  // Keep a ref mirror so drag callbacks always see the current index without stale closure
+  const trackIdxRef = useRef(trackIdx);
+
+  const [animated, setAnimated] = useState(true);
+
+  const dotIdx = canLoop ? ((trackIdx - 1) % total + total) % total : trackIdx;
+
+  // Drag refs — no React state, DOM mutations only → zero re-renders during drag
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const startY = useRef(0);
+  const direction = useRef<"h" | "v" | null>(null);
+
+  // Aspect ratio
+  const firstImg = images[0];
   const [aspectRatio, setAspectRatio] = useState(
     calcRatio(firstImg.width, firstImg.height),
   );
 
-  // Fallback: if data dimensions are stale/wrong, correct from natural size.
-  // Also handles the case where the image was already cached and onLoad won't fire.
   const applyNaturalRatio = useCallback((el: HTMLImageElement) => {
     if (el.naturalWidth && el.naturalHeight) {
       setAspectRatio(calcRatio(el.naturalWidth, el.naturalHeight));
@@ -64,12 +76,44 @@ export default function ImageSlider({
   useEffect(() => {
     const el = imgRef.current;
     if (!el) return;
-    if (el.complete) {
-      applyNaturalRatio(el); // already cached — onLoad won't fire
-    }
+    if (el.complete) applyNaturalRatio(el);
   }, [applyNaturalRatio]);
 
-  // Scroll reveal — only needed when filter is on (card view)
+  // Re-enable CSS transition after an instant jump (animated=false)
+  useEffect(() => {
+    if (!animated) {
+      const raf = requestAnimationFrame(() =>
+        requestAnimationFrame(() => setAnimated(true))
+      );
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [animated]);
+
+  // Helper: commit a new track index (keeps ref in sync)
+  const commitTrack = useCallback((fn: (i: number) => number, anim = true) => {
+    setAnimated(anim);
+    setTrackIdx((prev) => {
+      const next = fn(prev);
+      trackIdxRef.current = next;
+      return next;
+    });
+  }, []);
+
+  // When the CSS transition ends on a clone, jump to the real counterpart.
+  // Guard: only the track's own transform transition — ignore bubbled child events.
+  const handleTransitionEnd = useCallback((e: React.TransitionEvent<HTMLDivElement>) => {
+    if (e.target !== trackRef.current) return;
+    if (e.propertyName !== "transform") return;
+    if (!canLoop) return;
+    const i = trackIdxRef.current;
+    if (i === 0) {
+      commitTrack(() => total, false);
+    } else if (i === total + 1) {
+      commitTrack(() => 1, false);
+    }
+  }, [canLoop, total, commitTrack]);
+
+  // Scroll reveal (card view only)
   useEffect(() => {
     if (!filter) return;
     const el = wrapRef.current;
@@ -89,17 +133,17 @@ export default function ImageSlider({
     return () => { io.disconnect(); window.clearTimeout(t); };
   }, [filter]);
 
-  // Auto-play: always (detail) or on hover (card)
-  const playing = autoPlay || (hovered && total > 1);
+  // Auto-play
+  const playing = autoPlay || (hovered && canLoop);
 
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    if (total < 2) return;
-    timerRef.current = setInterval(
-      () => setIdx((i) => (i + 1) % total),
-      interval,
-    );
-  }, [total, interval]);
+    if (!canLoop) return;
+    timerRef.current = setInterval(() => {
+      setAnimated(true);
+      commitTrack((i) => i + 1);
+    }, interval);
+  }, [canLoop, interval, commitTrack]);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
@@ -111,21 +155,82 @@ export default function ImageSlider({
     return stopTimer;
   }, [playing, autoPlay, startTimer, stopTimer]);
 
-  const prev = useCallback((e?: React.MouseEvent) => {
+  const goPrev = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
-    setIdx((i) => (i - 1 + total) % total);
+    if (!canLoop) return;
+    commitTrack((i) => i - 1);
     if (autoPlay) startTimer();
-  }, [total, autoPlay, startTimer]);
+  }, [canLoop, autoPlay, commitTrack, startTimer]);
 
-  const next = useCallback((e?: React.MouseEvent) => {
+  const goNext = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
-    setIdx((i) => (i + 1) % total);
+    if (!canLoop) return;
+    commitTrack((i) => i + 1);
     if (autoPlay) startTimer();
-  }, [total, autoPlay, startTimer]);
+  }, [canLoop, autoPlay, commitTrack, startTimer]);
 
   const handleClick = useCallback(() => {
     if (slug) router.push(`/projects/${slug}/`);
   }, [slug, router]);
+
+  // ── Drag: all DOM-direct, no setState → no React re-renders ──
+  const setTrackStyle = useCallback((offset: number, transition: boolean) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.style.transition = transition ? "" : "none";
+    el.style.transform = offset !== 0
+      ? `translateX(calc(-${trackIdxRef.current * 100}% + ${offset}px))`
+      : `translateX(-${trackIdxRef.current * 100}%)`;
+  }, []);
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    if (!drag || !canLoop) return;
+    isDragging.current = true;
+    startX.current = e.clientX;
+    startY.current = e.clientY;
+    direction.current = null;
+    if (e.pointerType === "mouse") {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    }
+  }, [drag, canLoop]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    const dx = e.clientX - startX.current;
+    const dy = e.clientY - startY.current;
+
+    if (direction.current === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+      direction.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v";
+    }
+
+    if (direction.current === "v") {
+      isDragging.current = false;
+      return;
+    }
+
+    if (direction.current === "h") {
+      e.preventDefault(); // prevent page scroll while dragging horizontally
+      setTrackStyle(dx, false);
+    }
+  }, [setTrackStyle]);
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const delta = e.clientX - startX.current;
+
+    // Clear inline override — let React-controlled style take over
+    if (trackRef.current) {
+      trackRef.current.style.transition = "";
+      trackRef.current.style.transform = "";
+    }
+
+    if (direction.current === "h" && Math.abs(delta) >= DRAG_THRESHOLD) {
+      commitTrack((i) => delta < 0 ? i + 1 : i - 1);
+      if (autoPlay) startTimer();
+    }
+    direction.current = null;
+  }, [commitTrack, autoPlay, startTimer]);
 
   const cls = [
     styles.wrap,
@@ -133,6 +238,7 @@ export default function ImageSlider({
     filter && hovered ? styles.hovered : "",
     revealed ? styles.revealed : "",
     slug ? styles.clickable : "",
+    drag && canLoop ? styles.draggable : "",
   ].filter(Boolean).join(" ");
 
   return (
@@ -143,64 +249,50 @@ export default function ImageSlider({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={handleClick}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
     >
-      {/* Sliding track */}
       <div
+        ref={trackRef}
         className={styles.track}
-        style={{ transform: `translateX(-${idx * 100}%)` }}
+        style={{
+          transform: `translateX(-${trackIdx * 100}%)`,
+          transition: animated ? undefined : "none",
+        }}
+        onTransitionEnd={handleTransitionEnd}
       >
-        {images.map((img, i) => (
+        {extImages.map((img, i) => (
           <div key={i} className={styles.slide}>
             <img
-              ref={i === 0 ? imgRef : undefined}
+              ref={i === (canLoop ? 1 : 0) ? imgRef : undefined}
               src={withBasePath(img.src)}
               alt={img.alt}
               className={styles.img}
               draggable={false}
-              onLoad={i === 0 ? (e) => applyNaturalRatio(e.currentTarget) : undefined}
+              onLoad={i === (canLoop ? 1 : 0) ? (e) => applyNaturalRatio(e.currentTarget) : undefined}
             />
           </div>
         ))}
       </div>
 
-      {/* Grain (cards only) */}
       {filter && <div className={styles.grain} aria-hidden="true" />}
-
-      {/* Scroll-reveal wipe (cards only) */}
       {filter && (
         <div className={`${styles.wipe} ${revealed ? styles.wipeGone : ""}`} aria-hidden="true" />
       )}
 
-      {/* Arrows */}
-      {total > 1 && (
+      {canLoop && (
         <>
-          <button
-            className={`${styles.arrow} ${styles.arrowPrev}`}
-            onClick={prev}
-            aria-label="Previous image"
-            type="button"
-          >
-            ‹
-          </button>
-          <button
-            className={`${styles.arrow} ${styles.arrowNext}`}
-            onClick={next}
-            aria-label="Next image"
-            type="button"
-          >
-            ›
-          </button>
+          <button className={`${styles.arrow} ${styles.arrowPrev}`} onClick={goPrev} aria-label="Previous image" type="button">‹</button>
+          <button className={`${styles.arrow} ${styles.arrowNext}`} onClick={goNext} aria-label="Next image" type="button">›</button>
         </>
       )}
 
-      {/* Dot indicators */}
-      {total > 1 && (
+      {canLoop && (
         <div className={styles.dots} aria-hidden="true">
           {images.map((_, i) => (
-            <span
-              key={i}
-              className={`${styles.dot} ${i === idx ? styles.dotActive : ""}`}
-            />
+            <span key={i} className={`${styles.dot} ${i === dotIdx ? styles.dotActive : ""}`} />
           ))}
         </div>
       )}
