@@ -1,5 +1,5 @@
 export const BASE_PATH =
-  process.env.NODE_ENV === "production" ? "/Protfolio" : "";
+  process.env.NODE_ENV === "production" ? "/Portfolio" : "";
 
 /**
  * Prefix a root-relative public asset path with the configured basePath so it
