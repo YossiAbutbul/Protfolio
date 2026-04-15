@@ -1,11 +1,23 @@
 .toc {
-  position: sticky;
+  position: fixed;
   top: calc(var(--space-8) + var(--space-3));
-  align-self: start;
-  padding-right: var(--space-4);
-  border-right: 1px solid var(--hairline);
-  max-height: calc(100vh - var(--space-9));
+  left: max(var(--space-5), calc((100vw - var(--container-max)) / 2 + var(--space-5)));
+  width: 200px;
+  max-height: calc(100vh - var(--space-9) - var(--space-5));
   overflow-y: auto;
+  padding: 0 var(--space-4) 0 0;
+  border-right: 1px solid var(--hairline);
+  z-index: 8;
+  opacity: 0;
+  transform: translateX(-4px);
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out);
+}
+
+.toc.visible {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
 .label {
@@ -63,7 +75,7 @@
   opacity: 1;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .toc {
     display: none;
   }

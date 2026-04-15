@@ -133,16 +133,12 @@ export default async function ProjectDetail({
 
       <section className={styles.body}>
         <div className="container">
-          <div className={styles.layout}>
-            <aside className={styles.sidebar}>
-              <Toc scopeSelector=".content" />
-            </aside>
-            <div className={`content ${styles.prose}`}>
-              {Body && <Body />}
-            </div>
+          <div className={`content ${styles.prose}`}>
+            {Body && <Body />}
           </div>
         </div>
       </section>
+      <Toc scopeSelector=".content" />
 
       <nav className={styles.foot} aria-label="Project navigation">
         <div className="container">
