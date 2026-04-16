@@ -33,7 +33,7 @@ const ITEMS: TimelineItem[] = [
     period: "Oct 2022 — Present",
     year: "2022 —",
     org: "The Open University",
-    role: "BSc Computer Science (GPA 88)",
+    role: "BSc Computer Science",
     kind: "education",
     current: true,
     bullets: [

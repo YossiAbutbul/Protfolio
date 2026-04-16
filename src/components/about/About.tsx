@@ -30,7 +30,7 @@ export default function About() {
             <dl className={styles.facts}>
               <div className={styles.fact}>
                 <dt>Studying</dt>
-                <dd>BSc CS · Open Uni · GPA 88</dd>
+                <dd>BSc CS · Open Uni</dd>
               </div>
               <div className={styles.fact}>
                 <dt>Working at</dt>
