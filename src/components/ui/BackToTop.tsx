@@ -27,7 +27,7 @@ export default function BackToTop() {
 
   function jump() {
     if (typeof window !== "undefined" && window.__lenis) {
-      window.__lenis.scrollTo(0, { duration: 1.4 });
+      window.__lenis.scrollTo(0, { duration: 1.2, lock: true, force: true });
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
