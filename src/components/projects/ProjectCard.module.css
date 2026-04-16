@@ -17,6 +17,7 @@
 }
 
 .imageWrap {
+  position: relative;
   border: 1px solid var(--hairline);
   background: var(--bg-soft);
   overflow: hidden;
@@ -25,6 +26,58 @@
 
 .card:hover .imageWrap {
   border-color: var(--accent);
+}
+
+.posterLink {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hoverHint {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: rgba(5, 5, 5, 0.78);
+  border: 1px solid var(--hairline-strong);
+  border-radius: 2px;
+  line-height: 1;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease-out);
+}
+
+.hoverHintIcon {
+  color: var(--accent);
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.card:hover .hoverHint {
+  opacity: 0;
+}
+
+@media (hover: none) {
+  .hoverHint {
+    display: none;
+  }
 }
 
 .body {

@@ -22,6 +22,7 @@ export interface Project {
   stack: string[];
   links: ProjectLink[];
   images: ProjectImage[]; // [0] is card + detail hero
+  video?: string; // optional WebM clip; relative to basePath
   featured?: boolean;
   wip?: boolean;
 }

@@ -20,16 +20,39 @@ declare global {
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
-  // Reset scroll on every route change. Lenis lives in layout so it persists
-  // across nav; without this, the new page renders at the previous page's
-  // scroll offset.
+  // Restore scroll on route change. Lenis lives in layout so it persists
+  // across nav; without explicit handling, the new page renders at the
+  // previous page's offset. We save per-pathname positions in sessionStorage
+  // so returning to a page (e.g. from a project detail back to "/") lands on
+  // the same spot the user left.
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const saved = sessionStorage.getItem(`scroll:${pathname}`);
+    const target = saved ? parseInt(saved, 10) : 0;
     if (window.__lenis) {
-      window.__lenis.scrollTo(0, { immediate: true, force: true });
+      window.__lenis.scrollTo(target, { immediate: true, force: true });
     } else {
-      window.scrollTo(0, 0);
+      window.scrollTo(0, target);
     }
+  }, [pathname]);
+
+  // Throttled save of current scroll position, keyed by pathname.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let pending: ReturnType<typeof setTimeout> | null = null;
+    const save = () => {
+      pending = null;
+      sessionStorage.setItem(`scroll:${pathname}`, String(window.scrollY));
+    };
+    const onScroll = () => {
+      if (pending) return;
+      pending = setTimeout(save, 200);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (pending) clearTimeout(pending);
+    };
   }, [pathname]);
 
   useEffect(() => {

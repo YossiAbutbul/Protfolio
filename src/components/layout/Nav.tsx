@@ -27,6 +27,8 @@ export default function Nav() {
     );
     if (sections.length === 0) return;
 
+    const firstSection = sections[0];
+
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -37,7 +39,21 @@ export default function Nav() {
       { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.2, 0.6] },
     );
     sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
+
+    // While the hero is on screen (above the first observed section), no
+    // section should appear active in the nav.
+    const checkHero = () => {
+      const aboveFirst =
+        window.scrollY + window.innerHeight * 0.5 < firstSection.offsetTop;
+      if (aboveFirst) setActive(null);
+    };
+    checkHero();
+    window.addEventListener("scroll", checkHero, { passive: true });
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", checkHero);
+    };
   }, []);
 
   useEffect(() => {

@@ -136,6 +136,13 @@
   position: relative;
 }
 
+.heroVideo {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bg-soft);
+}
+
 .cap {
   font-family: var(--font-mono);
   font-size: var(--step--1);

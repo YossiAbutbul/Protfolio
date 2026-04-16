@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { PROJECTS, getAllSlugs, getProjectBySlug } from "@content/projects";
 import ImageSlider from "@/components/projects/ImageSlider";
 import TagPill from "@/components/projects/TagPill";
+import { withBasePath } from "@/lib/env";
 import Fiducial from "@/components/ui/Fiducial";
 import ReadingProgress from "@/components/ui/ReadingProgress";
 import Toc from "@/components/ui/Toc";
@@ -125,12 +126,25 @@ export default async function ProjectDetail({
       <figure className={styles.hero}>
         <div className="container">
           <div className={styles.heroFrame}>
-            <ImageSlider
-              images={project.images}
-              autoPlay
-              interval={3000}
-              drag
-            />
+            {project.video ? (
+              <video
+                className={styles.heroVideo}
+                src={withBasePath(project.video)}
+                poster={withBasePath(project.images[0].src)}
+                autoPlay
+                muted
+                loop
+                playsInline
+                aria-label={project.images[0].alt}
+              />
+            ) : (
+              <ImageSlider
+                images={project.images}
+                autoPlay
+                interval={3000}
+                drag
+              />
+            )}
           </div>
           <figcaption className={styles.cap}>{project.images[0].alt}</figcaption>
         </div>

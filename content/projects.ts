@@ -40,6 +40,7 @@ export const PROJECTS: Project[] = [
         height: 935,
       },
     ],
+    video: "/projects/report-generator/demo.webm",
     featured: true,
   },
   {
@@ -64,6 +65,7 @@ export const PROJECTS: Project[] = [
         height: 1079,
       },
     ],
+    video: "/projects/pipeline-cpu/demo.webm",
     featured: true,
   },
   {
@@ -104,6 +106,7 @@ export const PROJECTS: Project[] = [
         height: 1079,
       },
     ],
+    video: "/projects/oplanner/demo.mp4",
     featured: true,
   },
   {
