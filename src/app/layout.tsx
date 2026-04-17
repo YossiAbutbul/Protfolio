@@ -51,10 +51,19 @@ export const metadata: Metadata = {
     description:
       "Portfolio of Yossi Abutbul: CS student + RF integrator. Test-automation, antenna tooling, full-stack engineering.",
     type: "website",
+    images: [
+      {
+        url: "og.png",
+        width: 1200,
+        height: 630,
+        alt: "Yossi Abutbul — Software for RF and embedded systems",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Yossi Abutbul — Portfolio",
+    images: ["og.png"],
   },
 };
 
