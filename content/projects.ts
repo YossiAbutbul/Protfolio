@@ -6,10 +6,10 @@ export const PROJECTS: Project[] = [
     title: "RF Report Generator",
     summary:
       "Full-stack RF test-automation platform. Captures measurements, and generates structured reports with 3D analysis. Cut lab reporting time by 50%+.",
-    tags: ["software", "hardware", "embedded"],
+    tags: ["software"],
     year: 2024,
     role: "architecture, frontend, API, device integration",
-    stack: ["React", "TypeScript", "Python", "FastAPI", "Plotly"],
+    stack: ["React", "TypeScript", "Three.js", "Python", "FastAPI", "Plotly"],
     links: [
       { label: "GitHub", href: "https://github.com/YossiAbutbul/ReportGenrator" },
       { label: "Live Demo", href: "https://yossiabutbul.github.io/ReportGenrator/" },
@@ -73,7 +73,7 @@ export const PROJECTS: Project[] = [
     title: "Two-Pass Assembler",
     summary:
       "ANSI C90 compiler-like assembler. Two-stage: symbol-table build, then instruction parsing and base-4 machine-code emission. Built for the Systems Programming Laboratory course.",
-    tags: ["software", "embedded"],
+    tags: ["embedded"],
     year: 2023,
     role: "coursework",
     stack: ["C (ANSI C90)", "Make", "GDB"],
@@ -114,7 +114,7 @@ export const PROJECTS: Project[] = [
     title: "Mini-Circuits Power Sensor Wrapper",
     summary:
       "Python wrapper around a USB power sensor, bridging vendor .NET DLLs into a clean Pythonic API for lab automation scripts.",
-    tags: ["hardware", "software"],
+    tags: ["hardware"],
     year: 2024,
     role: "Solo",
     stack: ["Python", ".NET DLL interop", "USB"],

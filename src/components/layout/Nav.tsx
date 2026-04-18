@@ -9,9 +9,9 @@ import styles from "./Nav.module.css";
 
 const LINKS = [
   { href: "#about", label: "About", id: "about" },
-  { href: "#work", label: "Work", id: "work" },
-  { href: "#skills", label: "Skills", id: "skills" },
+  { href: "#work", label: "Projects", id: "work" },
   { href: "#experience", label: "Experience", id: "experience" },
+  { href: "#skills", label: "Skills", id: "skills" },
   { href: "#contact", label: "Contact", id: "contact" },
 ];
 
@@ -29,30 +29,28 @@ export default function Nav() {
 
     const firstSection = sections[0];
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.2, 0.6] },
-    );
-    sections.forEach((s) => io.observe(s));
-
-    // While the hero is on screen (above the first observed section), no
-    // section should appear active in the nav.
-    const checkHero = () => {
-      const aboveFirst =
-        window.scrollY + window.innerHeight * 0.5 < firstSection.offsetTop;
-      if (aboveFirst) setActive(null);
-    };
-    checkHero();
-    window.addEventListener("scroll", checkHero, { passive: true });
+    // Scroll-position spy: pick the section whose top has passed a probe
+    // line 40% down the viewport. More reliable than IntersectionObserver
+    // for tall sections (ratio would plateau and not re-fire).
+    function update() {
+      const probe = window.scrollY + window.innerHeight * 0.4;
+      if (probe < firstSection.offsetTop) {
+        setActive(null);
+        return;
+      }
+      let current: string | null = null;
+      for (const s of sections) {
+        if (s.offsetTop <= probe) current = s.id;
+      }
+      if (current) setActive(current);
+    }
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
 
     return () => {
-      io.disconnect();
-      window.removeEventListener("scroll", checkHero);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
     };
   }, []);
 
@@ -74,7 +72,24 @@ export default function Nav() {
             back to work
           </Link>
         ) : (
-          <Link href="/" className={styles.monogram} aria-label="Home — Yossi Abutbul">
+          <Link
+            href="/"
+            className={styles.monogram}
+            aria-label="Home — Yossi Abutbul"
+            onClick={(e) => {
+              if (pathname === "/") {
+                e.preventDefault();
+                if (window.__lenis) {
+                  window.__lenis.scrollTo(0, { duration: 1.2 });
+                } else {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+                history.replaceState(null, "", "/");
+              } else {
+                sessionStorage.removeItem("scroll:/");
+              }
+            }}
+          >
             <span aria-hidden="true">Yossi Abutbul</span>
             <span className={styles.monogramDot} aria-hidden="true" />
           </Link>
@@ -132,9 +147,15 @@ function NavLink({
     if (!ref.current) return;
     if (prefersReducedMotion()) return;
     const el = ref.current;
-    // Pin pixel width before scramble so flex siblings never shift
+    // Pin pixel width only during scramble so flex siblings don't shift,
+    // then release it so width reflects the actual label (which may change
+    // between renders).
     el.style.width = `${el.getBoundingClientRect().width}px`;
-    scrambleText(el, label, { duration: 500 });
+    const handle = scrambleText(el, label, { duration: 500 });
+    window.setTimeout(() => {
+      handle.stop();
+      el.style.width = "";
+    }, 520);
   }
 
   return (

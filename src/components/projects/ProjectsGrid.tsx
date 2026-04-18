@@ -27,7 +27,7 @@ export default function ProjectsGrid() {
     <section id="work" className={styles.section} aria-labelledby="work-label">
       <div className="container">
         <div id="work-label">
-          <SectionLabel index="02">Selected work</SectionLabel>
+          <SectionLabel index="02">Projects</SectionLabel>
         </div>
 
         <div

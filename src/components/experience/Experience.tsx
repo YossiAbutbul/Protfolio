@@ -92,7 +92,7 @@ export default function Experience() {
     >
       <div className="container">
         <div id="experience-label">
-          <SectionLabel index="04">Experience</SectionLabel>
+          <SectionLabel index="03">Experience</SectionLabel>
         </div>
         <ol className={styles.timeline}>
           {ITEMS.map((it, i) => (

@@ -36,11 +36,19 @@ export default function About() {
               </div>
               <div className={styles.fact}>
                 <dt>Comfortable with</dt>
-                <dd>TS / React · Python / FastAPI · C · RF instruments</dd>
+                <dd>
+                  TS / React · Python / FastAPI · C
+                  <br />
+                  RF instruments
+                </dd>
               </div>
               <div className={styles.fact}>
                 <dt>Curious about</dt>
-                <dd>Signal processing · compilers · hardware bring-up</dd>
+                <dd>
+                  Signal processing · compilers
+                  <br />
+                  Hardware bring-up
+                </dd>
               </div>
             </dl>
           </aside>

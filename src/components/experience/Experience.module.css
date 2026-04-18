@@ -170,6 +170,9 @@
     position: static;
     box-shadow: none;
   }
+  .dotPulse::after {
+    display: none;
+  }
   .timeline:hover .item:not(:hover) {
     opacity: 1;
   }

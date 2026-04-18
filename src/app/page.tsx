@@ -11,8 +11,8 @@ export default function HomePage() {
       <Hero />
       <About />
       <ProjectsGrid />
-      <Skills />
       <Experience />
+      <Skills />
       <Contact />
     </>
   );

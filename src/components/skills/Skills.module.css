@@ -182,8 +182,7 @@
     transform var(--dur-fast) var(--ease-out);
 }
 
-.cellChips:hover .chip,
-.cellChips:focus-within .chip {
+.cellChips:has(.chip:hover) .chip {
   opacity: 0.4;
 }
 

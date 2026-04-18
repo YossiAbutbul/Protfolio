@@ -9,7 +9,7 @@ interface Group {
 
 const SW_GROUPS: Group[] = [
   { label: "Languages", items: ["TypeScript", "JavaScript", "Python", "C (ANSI C90)"] },
-  { label: "Frontend", items: ["React", "Responsive UI", "Chart.js", "Plotly"] },
+  { label: "Frontend", items: ["React", "Responsive UI", "Three.js", "Chart.js", "Plotly"] },
   { label: "Backend", items: ["FastAPI", "REST APIs", "Firebase"] },
   { label: "Tools", items: ["Git", "GitHub", "Claude Code"] },
 ];
@@ -52,30 +52,20 @@ const MARQUEE = [
   "NB-IoT",
   "Bluetooth",
   "Python Automation",
-  ".NET Interop",
   "Firebase",
 ];
 
 const ROWS = SW_GROUPS.map((sw, i) => ({ sw, hw: HW_GROUPS[i] }));
 
 export default function Skills() {
-  let swIdx = 0;
-  let hwIdx = 0;
-
-  const swChip = (it: string) => {
-    swIdx += 1;
-    return <Chip key={`sw-${it}`} label={it} index={swIdx.toString().padStart(2, "0")} />;
-  };
-  const hwChip = (it: string) => {
-    hwIdx += 1;
-    return <Chip key={`hw-${it}`} label={it} index={hwIdx.toString().padStart(2, "0")} />;
-  };
+  const swChip = (it: string) => <Chip key={`sw-${it}`} label={it} />;
+  const hwChip = (it: string) => <Chip key={`hw-${it}`} label={it} />;
 
   return (
     <section id="skills" className={styles.section} aria-labelledby="skills-label">
       <div className="container">
         <div id="skills-label">
-          <SectionLabel index="03">Skills</SectionLabel>
+          <SectionLabel index="04">Skills</SectionLabel>
         </div>
 
         <div className={styles.marquee} data-reveal data-reveal-delay="1" aria-hidden="true">
@@ -115,13 +105,10 @@ export default function Skills() {
   );
 }
 
-function Chip({ label, index }: { label: string; index: string }) {
+function Chip({ label }: { label: string }) {
   return (
     <span className={styles.chip} tabIndex={0}>
       <span className={styles.chipText}>{label}</span>
-      <span className={styles.chipIndex} aria-hidden="true">
-        {index}
-      </span>
     </span>
   );
 }

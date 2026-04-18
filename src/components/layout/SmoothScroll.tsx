@@ -21,7 +21,11 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
   // the same spot the user left.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const saved = sessionStorage.getItem(`scroll:${pathname}`);
+    // Project detail pages always start at the top. Other routes restore
+    // the last saved scroll position so returning home lands where the
+    // user left off.
+    const isProject = pathname.startsWith("/projects/");
+    const saved = isProject ? null : sessionStorage.getItem(`scroll:${pathname}`);
     const target = saved ? parseInt(saved, 10) : 0;
     if (window.__lenis) {
       window.__lenis.scrollTo(target, { immediate: true, force: true });

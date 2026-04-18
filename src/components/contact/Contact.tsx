@@ -93,8 +93,6 @@ export default function Contact() {
         <footer className={styles.footer}>
           <p>
             <span className={styles.footMono}>© {new Date().getFullYear()} Yossi Abutbul</span>
-            <span aria-hidden="true"> · </span>
-            <span className={styles.footMono}>built with Next.js and Lenis</span>
           </p>
         </footer>
       </div>
