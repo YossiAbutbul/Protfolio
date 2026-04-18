@@ -128,7 +128,7 @@
   transform: translateY(-50%);
   width: 100vw;
   height: 120px;
-  padding-left: var(--space-4);
+  padding-left: clamp(64px, 6vw, 120px);
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
