@@ -14,9 +14,12 @@ const TAG_LABEL: Record<Project["tags"][number], string> = {
   embedded: "EMB",
 };
 
+const NO_HOVER_HINT = new Set(["two-pass-assembler", "mini-circuits-power-sensor"]);
+
 export default function ProjectCard({ project }: { project: Project }) {
   const [hovered, setHovered] = useState(false);
   const hasVideo = Boolean(project.video);
+  const showHint = !NO_HOVER_HINT.has(project.slug);
 
   const [videoAspect, setVideoAspect] = useState<number | null>(null);
 
@@ -43,10 +46,6 @@ export default function ProjectCard({ project }: { project: Project }) {
               className={styles.posterLink}
               aria-label={project.title}
             />
-            <span className={styles.hoverHint} aria-hidden="true">
-              <span className={styles.hoverHintIcon}>▶</span>
-              HOVER
-            </span>
           </>
         ) : (
           <ImageSlider
@@ -55,6 +54,12 @@ export default function ProjectCard({ project }: { project: Project }) {
             interval={2200}
             paddingRatio={0}
           />
+        )}
+        {showHint && (
+          <span className={styles.hoverHint} aria-hidden="true">
+            <span className={styles.hoverHintIcon}>▸</span>
+            {hasVideo ? "HOVER TO PLAY" : "HOVER TO PREVIEW"}
+          </span>
         )}
       </div>
 

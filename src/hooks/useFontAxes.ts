@@ -5,9 +5,9 @@ import { prefersReducedMotion } from "@/hooks/useReducedMotion";
 
 export interface FontAxes {
   wght: number; // 100..900
-  opsz: number; // 9..144 (for Fraunces)
-  SOFT: number; // 0..100
-  WONK: number; // 0 or 1
+  opsz: number; // 9..144 (Fraunces)
+  SOFT: number; // 0..100 (Fraunces — optical softness)
+  WONK: number; // 0 or 1 (Fraunces — alt quirky glyphs)
 }
 
 export interface FontAxesInput {
@@ -19,18 +19,15 @@ export interface FontAxesInput {
 
 export type AxesMapper = (i: FontAxesInput) => FontAxes;
 
-// Lock opsz at display range so wght changes don't jitter advance widths.
-const DEFAULT: FontAxes = { wght: 420, opsz: 120, SOFT: 0, WONK: 0 };
+const DEFAULT: FontAxes = { wght: 900, opsz: 120, SOFT: 0, WONK: 0 };
 
 function formatAxes(a: FontAxes): string {
-  return `"wght" ${a.wght.toFixed(0)}, "opsz" ${a.opsz.toFixed(0)}, "SOFT" ${a.SOFT.toFixed(
-    0,
-  )}, "WONK" ${a.WONK.toFixed(0)}`;
+  return `"wght" ${a.wght.toFixed(0)}, "opsz" ${a.opsz.toFixed(0)}, "SOFT" ${a.SOFT.toFixed(0)}, "WONK" ${a.WONK.toFixed(0)}`;
 }
 
 /**
- * Continuously drives font-variation-settings on a target element based on
- * pointer position + velocity. No-ops under prefers-reduced-motion.
+ * Drives font-variation-settings on a target element based on pointer
+ * position + velocity. No-ops under prefers-reduced-motion.
  */
 export function useFontAxes(
   ref: React.RefObject<HTMLElement | null>,
@@ -82,14 +79,9 @@ export function useFontAxes(
     }
 
     function tick() {
-      // Click fades after 400ms
       if (s.click && performance.now() - s.clickAt > 400) s.click = false;
-
-      // Velocity decays when idle
       if (performance.now() - s.lastMove > 80) s.vel *= 0.92;
 
-      // Lerp current toward target — slower than before so the morph reads
-      // as a calm breath rather than a twitch.
       (Object.keys(s.cur) as (keyof FontAxes)[]).forEach((k) => {
         s.cur[k] += (s.tgt[k] - s.cur[k]) * 0.04;
       });
@@ -110,13 +102,18 @@ export function useFontAxes(
   }, [ref, mapper]);
 }
 
-function defaultMapper({ ny, vel }: FontAxesInput): FontAxes {
-  // Width-stable: only wght and SOFT move. opsz pinned at 120 (display range)
-  // so letter advances don't twitch when the cursor first enters the page.
+function defaultMapper({ ny, vel, click }: FontAxesInput): FontAxes {
+  // Fraunces signature morph:
+  //  - opsz (text↔display cut) follows pointer Y — top of viewport = display
+  //    chunky, lower = finer text cut.
+  //  - SOFT (optical softness) follows velocity — fast motion bleeds ink, calm
+  //    keeps edges crisp.
+  //  - WONK toggles on click — reveals alt quirky glyphs as a surprise.
+  //  - wght breathes subtly under all of it.
   return {
-    wght: 380 + (1 - ny) * 100, // 380..480
-    opsz: 120, // locked
-    SOFT: vel * 18,
-    WONK: 0,
+    wght: 820 + (1 - ny) * 80, // 820..900
+    opsz: 60 + (1 - ny) * 84, // 60..144
+    SOFT: Math.min(100, vel * 140), // 0..100
+    WONK: click ? 1 : 0,
   };
 }

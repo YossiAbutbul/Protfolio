@@ -3,13 +3,7 @@
 import { useEffect, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/hooks/useReducedMotion";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 declare global {
   interface Window {
@@ -56,10 +50,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   useEffect(() => {
-    if (prefersReducedMotion()) {
-      ScrollTrigger.refresh();
-      return;
-    }
+    if (prefersReducedMotion()) return;
 
     // Force scroll to top on hard reload — browsers restore the previous
     // scroll position by default which fights the hero entrance.
@@ -86,35 +77,21 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       if (!dest) return;
       e.preventDefault();
       lenis.scrollTo(dest as HTMLElement, { offset: -16, duration: 1.4 });
-      // Update URL hash without browser jump
       history.replaceState(null, "", href);
     }
     document.addEventListener("click", handleAnchorClick);
 
-    // Drive Lenis via GSAP ticker; sync ScrollTrigger to Lenis scroll.
-    function raf(time: number) {
-      lenis.raf(time * 1000);
-    }
-    gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
-
-    lenis.on("scroll", () => ScrollTrigger.update());
-
-    ScrollTrigger.refresh();
-
-    // Scroll-reveal via scroll-driven viewport test. Auto-unregisters once
-    // every [data-reveal] element has been shown.
+    // Scroll-reveal via viewport test. Auto-stops polling once every
+    // [data-reveal] element has been shown.
     const REVEAL_OFFSET = 0.88;
-    let tickerAttached = false;
+    let tick = 0;
+    let stopped = false;
     function revealVisible() {
       const vh = window.innerHeight || 800;
       const threshold = vh * REVEAL_OFFSET;
       const pending = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
       if (pending.length === 0) {
-        if (tickerAttached) {
-          gsap.ticker.remove(tickReveal);
-          tickerAttached = false;
-        }
+        stopped = true;
         return;
       }
       pending.forEach((el) => {
@@ -122,22 +99,22 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
         if (rect.top < threshold && rect.bottom > 0) el.classList.add("is-in");
       });
     }
+
+    let raf = 0;
+    function loop(time: number) {
+      lenis.raf(time);
+      if (!stopped && ++tick % 6 === 0) revealVisible();
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+
     revealVisible();
     lenis.on("scroll", revealVisible);
     window.addEventListener("scroll", revealVisible, { passive: true });
     window.addEventListener("resize", revealVisible);
 
-    let tick = 0;
-    const tickReveal = () => {
-      if (++tick % 6 !== 0) return;
-      revealVisible();
-    };
-    gsap.ticker.add(tickReveal);
-    tickerAttached = true;
-
     return () => {
-      gsap.ticker.remove(raf);
-      if (tickerAttached) gsap.ticker.remove(tickReveal);
+      cancelAnimationFrame(raf);
       lenis.destroy();
       delete window.__lenis;
       document.removeEventListener("click", handleAnchorClick);

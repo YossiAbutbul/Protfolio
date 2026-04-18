@@ -42,7 +42,6 @@
 
   /* Fonts — wired up by next/font in layout.tsx */
   --font-serif: var(--font-fraunces, "Fraunces"), "Times New Roman", Georgia, serif;
-  --font-sans: var(--font-inter, "Inter"), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-mono: var(--font-mono, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Layout */

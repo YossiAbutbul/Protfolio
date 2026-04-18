@@ -6,7 +6,6 @@ import { PROJECTS, getAllSlugs, getProjectBySlug } from "@content/projects";
 import ImageSlider from "@/components/projects/ImageSlider";
 import TagPill from "@/components/projects/TagPill";
 import { withBasePath } from "@/lib/env";
-import Fiducial from "@/components/ui/Fiducial";
 import ReadingProgress from "@/components/ui/ReadingProgress";
 import Toc from "@/components/ui/Toc";
 import ReportGeneratorBody from "@content/projects/report-generator.mdx";
@@ -64,8 +63,6 @@ export default async function ProjectDetail({
   return (
     <article className={styles.page}>
       <ReadingProgress />
-      <Fiducial corner="tl" />
-      <Fiducial corner="tr" />
       <header className={styles.header}>
         <div className="container">
           <p className={styles.eyebrow}>

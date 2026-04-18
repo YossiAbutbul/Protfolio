@@ -1,5 +1,4 @@
 import SectionLabel from "@/components/ui/SectionLabel";
-import Fiducial from "@/components/ui/Fiducial";
 import { withBasePath } from "@/lib/env";
 import styles from "./Contact.module.css";
 
@@ -45,10 +44,6 @@ const LINKS: LinkRow[] = [
 export default function Contact() {
   return (
     <section id="contact" className={styles.section} aria-labelledby="contact-label">
-      <Fiducial corner="tl" />
-      <Fiducial corner="tr" />
-      <Fiducial corner="bl" />
-      <Fiducial corner="br" />
       <div className="container">
         <div id="contact-label">
           <SectionLabel index="05">Contact</SectionLabel>
@@ -99,7 +94,7 @@ export default function Contact() {
           <p>
             <span className={styles.footMono}>© {new Date().getFullYear()} Yossi Abutbul</span>
             <span aria-hidden="true"> · </span>
-            <span className={styles.footMono}>built with Next.js, GSAP, and Lenis</span>
+            <span className={styles.footMono}>built with Next.js and Lenis</span>
           </p>
         </footer>
       </div>

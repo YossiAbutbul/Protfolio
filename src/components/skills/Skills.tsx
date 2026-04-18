@@ -11,7 +11,7 @@ const SW_GROUPS: Group[] = [
   { label: "Languages", items: ["TypeScript", "JavaScript", "Python", "C (ANSI C90)"] },
   { label: "Frontend", items: ["React", "Responsive UI", "Chart.js", "Plotly"] },
   { label: "Backend", items: ["FastAPI", "REST APIs", "Firebase"] },
-  { label: "Tools", items: ["Git", ".NET DLL interop"] },
+  { label: "Tools", items: ["Git", "GitHub", "Claude Code"] },
 ];
 
 const HW_GROUPS: Group[] = [
@@ -75,7 +75,7 @@ export default function Skills() {
     <section id="skills" className={styles.section} aria-labelledby="skills-label">
       <div className="container">
         <div id="skills-label">
-          <SectionLabel index="03">Capabilities</SectionLabel>
+          <SectionLabel index="03">Skills</SectionLabel>
         </div>
 
         <div className={styles.marquee} data-reveal data-reveal-delay="1" aria-hidden="true">
@@ -91,11 +91,9 @@ export default function Skills() {
 
         <div className={styles.table} data-reveal data-reveal-delay="2">
           <header className={styles.cellHead}>
-            <span className={styles.colKey}>K-01</span>
             <h3 className={styles.colTitle}>Software</h3>
           </header>
           <header className={`${styles.cellHead} ${styles.cellHeadR}`}>
-            <span className={styles.colKey}>K-02</span>
             <h3 className={styles.colTitle}>Hardware / Embedded</h3>
           </header>
 

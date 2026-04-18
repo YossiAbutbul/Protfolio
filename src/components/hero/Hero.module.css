@@ -117,25 +117,3 @@
   text-transform: uppercase;
   margin-top: var(--space-2);
 }
-
-.scrollCue {
-  margin-top: var(--space-7);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  color: var(--fg-muted);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  animation: hint 2.8s var(--ease-in-out) infinite;
-}
-
-@keyframes hint {
-  0%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.85;
-  }
-  50% {
-    transform: translateY(6px);
-    opacity: 1;
-  }
-}

@@ -43,29 +43,66 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 10px;
+  padding: 7px 12px;
   font-family: var(--font-mono);
-  font-size: 0.64rem;
-  letter-spacing: 0.24em;
+  font-size: 0.68rem;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--fg);
-  background: rgba(5, 5, 5, 0.78);
+  background: rgba(5, 5, 5, 0.82);
   border: 1px solid var(--hairline-strong);
   border-radius: 2px;
   line-height: 1;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
   pointer-events: none;
-  transition: opacity var(--dur-med) var(--ease-out);
+  transition:
+    opacity var(--dur-med) var(--ease-out),
+    transform var(--dur-med) var(--ease-out);
+  animation: hoverHintPulse 2.8s var(--ease-in-out) infinite;
 }
 
 .hoverHintIcon {
   color: var(--accent);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   line-height: 1;
+  display: inline-block;
+  animation: hoverHintArrow 2.8s var(--ease-in-out) infinite;
 }
 
-.card:hover .hoverHint {
+.card:hover .hoverHint,
+.card:focus-within .hoverHint {
   opacity: 0;
+  transform: translateY(4px);
+  animation: none;
+}
+
+@keyframes hoverHintPulse {
+  0%,
+  100% {
+    opacity: 0.78;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes hoverHintArrow {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hoverHint,
+  .hoverHintIcon {
+    animation: none;
+  }
 }
 
 @media (hover: none) {

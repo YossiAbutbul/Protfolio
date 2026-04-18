@@ -11,8 +11,8 @@ export default function About() {
         <div className={styles.grid}>
           <div className={styles.prose}>
             <p className={styles.lead} data-reveal data-reveal-delay="1">
-              CS student at The Open University building software for RF and embedded
-              systems.
+              BSc Computer Science student at The Open University building software for
+              RF and embedded systems.
             </p>
             <p data-reveal data-reveal-delay="2">
               I design test-automation platforms, antenna-pattern tooling, and workflow
@@ -20,9 +20,7 @@ export default function About() {
               with low-level hands-on.
             </p>
             <p data-reveal data-reveal-delay="3">
-              Day job: RF & electronics integrator at Arad Technologies. Before that, three
-              years in the IDF Intelligence Corps as a project lead and RF technician.
-              I like the moments where firmware, hardware, and UI meet and have to agree.
+              I like the moments where firmware, hardware, and UI meet.
             </p>
           </div>
 
@@ -30,7 +28,7 @@ export default function About() {
             <dl className={styles.facts}>
               <div className={styles.fact}>
                 <dt>Studying</dt>
-                <dd>BSc CS · Open Uni</dd>
+                <dd>BSc Computer Science · The Open University</dd>
               </div>
               <div className={styles.fact}>
                 <dt>Working at</dt>

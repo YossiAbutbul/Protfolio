@@ -1,14 +1,9 @@
 import MorphingTitle from "./MorphingTitle";
 import styles from "./Hero.module.css";
-import Fiducial from "@/components/ui/Fiducial";
 
 export default function Hero() {
   return (
     <section id="hero" className={styles.hero} aria-labelledby="hero-name">
-      <Fiducial corner="tl" />
-      <Fiducial corner="tr" />
-      <Fiducial corner="bl" />
-      <Fiducial corner="br" />
       <div className={`container ${styles.inner}`}>
         <p className={`eyebrow ${styles.eyebrow}`}>
           <span className={styles.dot} aria-hidden="true" />
@@ -19,10 +14,7 @@ export default function Hero() {
         </div>
         <p className={styles.subtitle}>Building software where signals meet code.</p>
         <p className={styles.meta}>
-          CS student at The Open University <span aria-hidden="true">·</span> Innovating with AI
-        </p>
-        <p className={styles.scrollCue} aria-hidden="true">
-          scroll ↓
+          BSc Computer Science student at The Open University <span aria-hidden="true">·</span> Innovating with AI
         </p>
       </div>
     </section>
