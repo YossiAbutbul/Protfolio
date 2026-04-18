@@ -8,11 +8,11 @@ import { prefersReducedMotion } from "@/hooks/useReducedMotion";
 import styles from "./Nav.module.css";
 
 const LINKS = [
-  { href: "#about", label: "About", id: "about" },
-  { href: "#work", label: "Projects", id: "work" },
-  { href: "#experience", label: "Experience", id: "experience" },
-  { href: "#skills", label: "Skills", id: "skills" },
-  { href: "#contact", label: "Contact", id: "contact" },
+  { href: "/#about", label: "About", id: "about" },
+  { href: "/#work", label: "Projects", id: "work" },
+  { href: "/#experience", label: "Experience", id: "experience" },
+  { href: "/#skills", label: "Skills", id: "skills" },
+  { href: "/#contact", label: "Contact", id: "contact" },
 ];
 
 export default function Nav() {
