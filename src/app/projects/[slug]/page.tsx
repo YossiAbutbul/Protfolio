@@ -13,6 +13,7 @@ import PipelineCpuBody from "@content/projects/pipeline-cpu.mdx";
 import AssemblerBody from "@content/projects/two-pass-assembler.mdx";
 import OPlannerBody from "@content/projects/oplanner.mdx";
 import MiniCircuitsBody from "@content/projects/mini-circuits-power-sensor.mdx";
+import HaparlamentorBody from "@content/projects/haparlamentor.mdx";
 import styles from "./detail.module.css";
 
 type MDXComponent = (props: object) => React.ReactElement;
@@ -23,6 +24,7 @@ const MDX_BY_SLUG: Record<string, MDXComponent> = {
   "two-pass-assembler": AssemblerBody as unknown as MDXComponent,
   oplanner: OPlannerBody as unknown as MDXComponent,
   "mini-circuits-power-sensor": MiniCircuitsBody as unknown as MDXComponent,
+  haparlamentor: HaparlamentorBody as unknown as MDXComponent,
 };
 
 const TAG_LABEL = { software: "SW", hardware: "HW", embedded: "EMB" } as const;

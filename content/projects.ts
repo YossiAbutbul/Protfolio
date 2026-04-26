@@ -44,6 +44,30 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
+    slug: "haparlamentor",
+    title: "Haparlamentor",
+    summary:
+      "Hebrew phrase-to-episode search for the Israeli sitcom הפרלמנט. CRT-frame UI, fuzzy search across transcripts, deep-links to the matching Mako episode and timestamp.",
+    tags: ["software"],
+    year: 2026,
+    role: "Solo",
+    stack: ["Next.js 15", "TypeScript", "Tailwind v4", "Framer Motion", "Fuse.js"],
+    wip: true,
+    links: [
+      { label: "GitHub", href: "https://github.com/YossiAbutbul/Haparlamentor" },
+      { label: "Live Demo", href: "https://yossiabutbul.github.io/Haparlamentor/" },
+    ],
+    images: [
+      {
+        src: "/projects/haparlamentor/01-haparlamentor.svg",
+        alt: "Haparlamentor — CRT-framed Hebrew search UI with TV-guide results",
+        width: 1919,
+        height: 1079,
+      },
+    ],
+    featured: true,
+  },
+  {
     slug: "pipeline-cpu",
     title: "Pipeline CPU Simulator",
     summary:
