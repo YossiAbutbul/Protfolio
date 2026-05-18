@@ -1,19 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, JetBrains_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 import Nav from "@/components/layout/Nav";
 import SkipToContent from "@/components/layout/SkipToContent";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import BackToTop from "@/components/ui/BackToTop";
-import BootLog from "@/components/fx/BootLog";
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  display: "swap",
-  axes: ["opsz", "SOFT", "WONK"],
-});
+import PageTransition from "@/components/layout/PageTransition";
 
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
@@ -23,7 +17,7 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://yossiabutbul.github.io/Portfolio/"),
-  title: "Yossi Abutbul — Software for RF and embedded systems",
+  title: "Yossi Abutbul - Portfolio",
   description:
     "BSc Computer Science student at The Open University and RF & electronics integrator at Arad Technologies. I build test-automation platforms, antenna tooling, and workflow software for engineering labs.",
   authors: [{ name: "Yossi Abutbul" }],
@@ -40,7 +34,7 @@ export const metadata: Metadata = {
     "test automation",
   ],
   openGraph: {
-    title: "Yossi Abutbul — Software for RF and embedded systems",
+    title: "Yossi Abutbul - Portfolio",
     description:
       "Portfolio of Yossi Abutbul: BSc Computer Science student + RF integrator. Test-automation, antenna tooling, full-stack engineering.",
     type: "website",
@@ -55,14 +49,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yossi Abutbul — Portfolio",
+    title: "Yossi Abutbul - Portfolio",
     images: ["og.png"],
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#050505",
-  colorScheme: "dark",
+  themeColor: "#1a1614",
 };
 
 export default function RootLayout({
@@ -71,16 +64,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${jetbrains.variable}`}
+      className={`${GeistSans.variable} ${jetbrains.variable}`}
+      data-theme="dark"
     >
       <body>
         <SkipToContent />
         <SmoothScroll>
           <Nav />
-          <main id="main">{children}</main>
+          <main id="main">
+            <PageTransition>{children}</PageTransition>
+          </main>
         </SmoothScroll>
         <BackToTop />
-        <BootLog />
       </body>
     </html>
   );

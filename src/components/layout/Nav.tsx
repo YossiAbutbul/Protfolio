@@ -5,11 +5,19 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./Nav.module.css";
 
-const LINKS = [
+interface NavLink {
+  href: string;
+  label: string;
+  id: string;
+  /** Additional section ids that should also mark this link active. */
+  aliases?: string[];
+}
+
+const LINKS: NavLink[] = [
   { href: "/#about", label: "About", id: "about" },
-  { href: "/#projects", label: "Projects", id: "projects" },
+  { href: "/#showcase", label: "Projects", id: "showcase", aliases: ["projects"] },
   { href: "/#experience", label: "Experience", id: "experience" },
-  { href: "/#skills", label: "Skills", id: "skills" },
+  { href: "/#skills", label: "Stack", id: "skills" },
   { href: "/#contact", label: "Contact", id: "contact" },
 ];
 
@@ -24,38 +32,45 @@ export default function Nav() {
       setActive(null);
       return;
     }
-    const sections = LINKS.map((l) => document.getElementById(l.id)).filter(
-      (el): el is HTMLElement => !!el,
-    );
-    if (sections.length === 0) return;
 
-    const firstSection = sections[0];
+    // Poll via rAF. We re-query the section elements every frame because:
+    //  (1) Lenis' programmatic scrolls don't reliably dispatch native scroll events;
+    //  (2) AnimatePresence with key={pathname} unmounts and remounts the page on
+    //      every soft-nav, so cached element refs become stale (a detached element
+    //      reports getBoundingClientRect().top = 0, which collapses the algorithm
+    //      onto the last-defined section — Contact).
+    let raf = 0;
+    let last: string | null | undefined = undefined;
 
-    // Scroll-position spy: pick the section whose top has passed a probe
-    // line 40% down the viewport. getBoundingClientRect is used instead of
-    // offsetTop so the measurement is always viewport-relative and immune to
-    // positioned-ancestor offset chains.
     function update() {
       const probe = window.innerHeight * 0.4;
-      if (firstSection.getBoundingClientRect().top > probe) {
-        setActive(null);
-        return;
+      let firstTop: number | null = null;
+      let next: string | null = null;
+      for (const l of LINKS) {
+        const ids = [l.id, ...(l.aliases ?? [])];
+        for (const sid of ids) {
+          const el = document.getElementById(sid);
+          if (!el) continue;
+          const top = el.getBoundingClientRect().top;
+          if (firstTop === null) firstTop = top;
+          if (top <= probe) next = l.id;
+        }
       }
-      let current: string | null = null;
-      for (const s of sections) {
-        if (s.getBoundingClientRect().top <= probe) current = s.id;
+      // If the first section is still below the probe line, nothing is "active".
+      if (firstTop === null || firstTop > probe) next = null;
+      if (next !== last) {
+        last = next;
+        setActive(next);
       }
-      if (current) setActive(current);
     }
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
 
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, [isProject]);
+    function loop() {
+      update();
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [isProject, pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -70,9 +85,20 @@ export default function Nav() {
     <header className={styles.nav}>
       <div className={`container ${styles.inner}`}>
         {isProject ? (
-          <Link href="/#projects" className={`link-inline ${styles.backLink}`} aria-label="Back to Projects">
+          <Link
+            href="/"
+            className={styles.backLink}
+            aria-label="Back to Projects"
+            onClick={() => {
+              try {
+                sessionStorage.setItem("__navTarget", "showcase");
+                // Saved scroll for "/" would otherwise override the target.
+                sessionStorage.removeItem("scroll:/");
+              } catch {}
+            }}
+          >
             <span className={styles.backArrow} aria-hidden="true">←</span>
-            Back to Projects
+            Back
           </Link>
         ) : (
           <Link
@@ -87,46 +113,45 @@ export default function Nav() {
                 } else {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
-              } else {
-                sessionStorage.removeItem("scroll:/");
               }
             }}
           >
-            <span aria-hidden="true">Yossi Abutbul</span>
-            <span className={styles.monogramDot} aria-hidden="true" />
+            <span className={styles.monogramMark} aria-hidden="true">YA</span>
           </Link>
         )}
 
-        <button
-          className={styles.menuBtn}
-          type="button"
-          aria-expanded={open}
-          aria-controls="primary-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span className={`${styles.menuBar} ${open ? styles.menuBarOpen : ""}`} aria-hidden="true" />
-          <span className={`${styles.menuBar} ${open ? styles.menuBarOpen : ""}`} aria-hidden="true" />
-        </button>
+        <div className={styles.right}>
+          <nav
+            id="primary-nav"
+            className={`${styles.navWrap} ${open ? styles.navWrapOpen : ""}`}
+            aria-label="Primary"
+          >
+            <ul className={styles.links}>
+              {LINKS.map((l) => (
+                <li key={l.href}>
+                  <NavLink
+                    href={l.href}
+                    label={l.label}
+                    active={active === l.id}
+                    onNavigate={() => setOpen(false)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        <nav
-          id="primary-nav"
-          className={`${styles.navWrap} ${open ? styles.navWrapOpen : ""}`}
-          aria-label="Primary"
-        >
-          <ul className={styles.links}>
-            {LINKS.map((l) => (
-              <li key={l.href}>
-                <NavLink
-                  href={l.href}
-                  label={l.label}
-                  active={active === l.id}
-                  onNavigate={() => setOpen(false)}
-                />
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <button
+            className={styles.menuBtn}
+            type="button"
+            aria-expanded={open}
+            aria-controls="primary-nav"
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className={`${styles.menuBar} ${open ? styles.menuBarOpen : ""}`} aria-hidden="true" />
+            <span className={`${styles.menuBar} ${open ? styles.menuBarOpen : ""}`} aria-hidden="true" />
+          </button>
+        </div>
       </div>
     </header>
   );
@@ -145,7 +170,7 @@ function NavLink({
 }) {
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
-    const id = href.replace(/^\/?#/, ""); // "/#about" → "about"
+    const id = href.replace(/^\/?#/, "");
     const el = document.getElementById(id);
     if (el) {
       if (window.__lenis) {
@@ -166,12 +191,7 @@ function NavLink({
       className={`${styles.link} ${active ? styles.linkActive : ""}`}
       onClick={handleClick}
     >
-      <span className={styles.linkMarker} aria-hidden="true">
-        {active ? "●" : ""}
-      </span>
-      <span className={styles.linkText}>
-        {label}
-      </span>
+      <span className={styles.linkText}>{label}</span>
     </a>
   );
 }
