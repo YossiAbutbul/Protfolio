@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm, ValidationError } from "@formspree/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SectionLabel from "@/components/ui/SectionLabel";
 import { withBasePath } from "@/lib/env";
 import styles from "./Contact.module.css";
@@ -76,21 +76,22 @@ export default function Contact() {
             ))}
           </ul>
 
-          {/* Right: form / success */}
+          {/* Right: form / success — grid overlay keeps height stable */}
           <div className={styles.right} data-reveal data-reveal-delay="2">
-            {showSuccess ? (
-              <div className={styles.success}>
-                <span className={styles.successIcon} aria-hidden="true">✓</span>
-                <p className={styles.successTitle}>Message sent.</p>
-                <p className={styles.successSub}>I&apos;ll get back to you shortly.</p>
-              </div>
-            ) : (
-              <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.formSlot}>
+
+              {/* Form — fades out on success */}
+              <form
+                className={styles.form}
+                onSubmit={handleSubmit}
+                data-hidden={showSuccess ? "" : undefined}
+                aria-hidden={showSuccess}
+              >
                 <div className={styles.row2}>
                   <div className={styles.field}>
                     <label className={styles.label} htmlFor="cf-name">Name</label>
                     <input id="cf-name" name="name" className={styles.input}
-                      type="text" placeholder="Jane Smith" autoComplete="name" />
+                      type="text" placeholder="Your Name" autoComplete="name" />
                   </div>
                   <div className={styles.field}>
                     <label className={styles.label} htmlFor="cf-email">Email</label>
@@ -120,7 +121,40 @@ export default function Contact() {
                   </button>
                 </div>
               </form>
-            )}
+
+              {/* Success — fades in, RF signal ripple */}
+              <div
+                className={styles.success}
+                data-visible={showSuccess ? "" : undefined}
+                aria-live="polite"
+                aria-hidden={!showSuccess}
+              >
+                {/* Concentric ripple rings */}
+                <div className={styles.signalWrap} aria-hidden="true">
+                  <span className={styles.signalRing} />
+                  <span className={styles.signalRing} />
+                  <span className={styles.signalRing} />
+                  <span className={styles.signalCore}>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                      stroke="currentColor" strokeWidth="2"
+                      strokeLinecap="round" strokeLinejoin="round"
+                    >
+                      <polyline className={styles.checkMark} points="3,9 7,13 15,5" />
+                    </svg>
+                  </span>
+                </div>
+
+                <p className={styles.successTitle}>Transmitted.</p>
+                <p className={styles.successSub}>I&apos;ll get back to you shortly.</p>
+
+                {/* Drains over RESET_DELAY to indicate form will return */}
+                <span
+                  className={styles.resetBar}
+                  style={{ "--reset-dur": `${RESET_DELAY}ms` } as React.CSSProperties}
+                />
+              </div>
+
+            </div>
           </div>
 
         </div>
