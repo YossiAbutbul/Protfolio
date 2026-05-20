@@ -20,12 +20,17 @@ const LINKS: LinkRow[] = [
 
 const RESET_DELAY = 5000; // ms before form reappears after success
 
-export default function Contact() {
+// ── Inner form — isolated so `key` remount resets useForm state ──────────────
+function ContactForm({
+  hidden,
+  onSuccess,
+}: {
+  hidden: boolean;
+  onSuccess: () => void;
+}) {
   const [state, handleSubmit] = useForm(FORMSPREE_ID);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [pending, setPending] = useState(false);
 
-  // Wrap Formspree's handler so the button reacts instantly on click
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     setPending(true);
     await handleSubmit(e);
@@ -33,11 +38,66 @@ export default function Contact() {
   }
 
   useEffect(() => {
-    if (!state.succeeded) return;
+    if (state.succeeded) onSuccess();
+  }, [state.succeeded]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <form
+      className={styles.form}
+      onSubmit={onSubmit}
+      data-hidden={hidden ? "" : undefined}
+      aria-hidden={hidden}
+    >
+      <div className={styles.row2}>
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="cf-name">Name</label>
+          <input id="cf-name" name="name" className={styles.input}
+            type="text" placeholder="Your Name" autoComplete="name" />
+        </div>
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="cf-email">Email</label>
+          <input id="cf-email" name="email" className={styles.input}
+            type="email" placeholder="hello@example.com" required autoComplete="email" />
+          <ValidationError field="email" prefix="Email" errors={state.errors} className={styles.errMsg} />
+        </div>
+      </div>
+
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="cf-subject">Subject</label>
+        <input id="cf-subject" name="subject" className={styles.input}
+          type="text" placeholder="What's this about?" />
+      </div>
+
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="cf-message">Message</label>
+        <textarea id="cf-message" name="message"
+          className={`${styles.input} ${styles.textarea}`}
+          placeholder="Tell me more…" rows={5} />
+        <ValidationError field="message" prefix="Message" errors={state.errors} className={styles.errMsg} />
+      </div>
+
+      <div className={styles.formFooter}>
+        <button type="submit" className={styles.btnSubmit} disabled={pending}>
+          {pending ? "Sending…" : <>Send message <span aria-hidden="true">→</span></>}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+// ── Outer section ─────────────────────────────────────────────────────────────
+export default function Contact() {
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+
+  function handleSuccess() {
     setShowSuccess(true);
-    const t = setTimeout(() => setShowSuccess(false), RESET_DELAY);
-    return () => clearTimeout(t);
-  }, [state.succeeded]);
+    setTimeout(() => {
+      setShowSuccess(false);
+      // Increment key → remounts ContactForm with a fresh useForm instance
+      setAttempt((n) => n + 1);
+    }, RESET_DELAY);
+  }
 
   return (
     <section id="contact" className={styles.section} aria-labelledby="contact-label">
@@ -88,47 +148,12 @@ export default function Contact() {
           <div className={styles.right} data-reveal data-reveal-delay="2">
             <div className={styles.formSlot}>
 
-              {/* Form — fades out on success */}
-              <form
-                className={styles.form}
-                onSubmit={onSubmit}
-                data-hidden={showSuccess ? "" : undefined}
-                aria-hidden={showSuccess}
-              >
-                <div className={styles.row2}>
-                  <div className={styles.field}>
-                    <label className={styles.label} htmlFor="cf-name">Name</label>
-                    <input id="cf-name" name="name" className={styles.input}
-                      type="text" placeholder="Your Name" autoComplete="name" />
-                  </div>
-                  <div className={styles.field}>
-                    <label className={styles.label} htmlFor="cf-email">Email</label>
-                    <input id="cf-email" name="email" className={styles.input}
-                      type="email" placeholder="hello@example.com" required autoComplete="email" />
-                    <ValidationError field="email" prefix="Email" errors={state.errors} className={styles.errMsg} />
-                  </div>
-                </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label} htmlFor="cf-subject">Subject</label>
-                  <input id="cf-subject" name="subject" className={styles.input}
-                    type="text" placeholder="What's this about?" />
-                </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label} htmlFor="cf-message">Message</label>
-                  <textarea id="cf-message" name="message"
-                    className={`${styles.input} ${styles.textarea}`}
-                    placeholder="Tell me more…" rows={5} />
-                  <ValidationError field="message" prefix="Message" errors={state.errors} className={styles.errMsg} />
-                </div>
-
-                <div className={styles.formFooter}>
-                  <button type="submit" className={styles.btnSubmit} disabled={pending}>
-                    {pending ? "Sending…" : <>Send message <span aria-hidden="true">→</span></>}
-                  </button>
-                </div>
-              </form>
+              {/* Form — key remount resets useForm between sends */}
+              <ContactForm
+                key={attempt}
+                hidden={showSuccess}
+                onSuccess={handleSuccess}
+              />
 
               {/* Success — fades in, RF signal ripple */}
               <div
