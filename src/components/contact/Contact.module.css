@@ -1,7 +1,7 @@
 /* ── Section ─────────────────────────────────────────────────────────────── */
 .section {
   position: relative;
-  padding: var(--space-9) 0 var(--space-8);
+  padding: var(--space-9) 0 calc(var(--space-8) + 64px);
 }
 
 /* ── Header above grid ───────────────────────────────────────────────────── */
@@ -15,7 +15,7 @@
 .headline {
   font-size: var(--step-6);
   font-weight: 600;
-  line-height: 1.0;
+  line-height: 1;
   letter-spacing: -0.04em;
   margin: 0;
 }
@@ -98,7 +98,10 @@
 }
 
 .rowValue:hover,
-.rowValue:focus-visible { color: var(--accent); outline: none; }
+.rowValue:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
 
 .rowValue:hover .rowText::after,
 .rowValue:focus-visible .rowText::after {
@@ -203,7 +206,7 @@
 
 .textarea {
   resize: none;
-  min-height: 100px;
+  min-height: 110px;
   line-height: 1.6;
 }
 
@@ -316,11 +319,19 @@
     grid-template-columns: 1fr;
     gap: var(--space-7);
   }
-  .right { position: static; }
-  .headline { font-size: var(--step-5); }
-  .lede { white-space: normal; }
+  .right {
+    position: static;
+  }
+  .headline {
+    font-size: var(--step-5);
+  }
+  .lede {
+    white-space: normal;
+  }
 }
 
 @media (max-width: 480px) {
-  .row2 { grid-template-columns: 1fr; }
+  .row2 {
+    grid-template-columns: 1fr;
+  }
 }
