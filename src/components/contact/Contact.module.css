@@ -18,7 +18,7 @@
 .left {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-7);
 }
 
 .headline {
@@ -26,7 +26,7 @@
   font-weight: 600;
   line-height: 1.0;
   letter-spacing: -0.04em;
-  margin: 0;
+  margin: 0 0 var(--space-4);
 }
 
 .headline em {
@@ -39,80 +39,93 @@
   font-size: var(--step-0);
   line-height: 1.65;
   margin: 0;
-  max-width: 36ch;
 }
 
-/* ── Link cards ──────────────────────────────────────────────────────────── */
-.links {
+/* ── Links list ──────────────────────────────────────────────────────────── */
+.list {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  border-top: 1px solid var(--hairline);
 }
 
-.linkCard {
-  display: flex;
+.row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--hairline);
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-4) var(--space-4);
-  border: 1px solid var(--hairline-strong);
-  border-radius: var(--radius-md);
-  background: var(--bg-soft);
-  text-decoration: none;
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out);
 }
 
-.linkCard:hover {
-  border-color: var(--accent);
-  background: var(--bg-elevated);
-}
-
-.linkCard:hover .linkDisplay {
-  color: var(--accent);
-}
-
-.linkCard:hover .linkArrow {
-  color: var(--accent);
-  transform: translate(2px, -2px);
-}
-
-.linkInner {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.linkLabel {
+.rowLabel {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: var(--step--1);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--fg-muted);
 }
 
-.linkDisplay {
-  font-size: var(--step-0);
+.rowValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--step-1);
   font-weight: 500;
   color: var(--fg);
+  text-decoration: none;
   transition: color var(--dur-fast) var(--ease-out);
 }
 
-.linkArrow {
-  font-size: 1rem;
+.rowText {
+  position: relative;
+}
+
+.rowText::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--dur-med) var(--ease-out);
+}
+
+.rowValue:hover,
+.rowValue:focus-visible { color: var(--accent); outline: none; }
+
+.rowValue:hover .rowText::after,
+.rowValue:focus-visible .rowText::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.rowArrow {
+  font-family: var(--font-mono);
   color: var(--fg-muted);
+  opacity: 0;
+  transform: translateX(-6px);
   transition:
-    color var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-med) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.rowValue:hover .rowArrow,
+.rowValue:focus-visible .rowArrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--accent);
 }
 
 /* ── Right: form ─────────────────────────────────────────────────────────── */
 .right {
-  display: flex;
-  flex-direction: column;
+  /* sticky so form stays alongside tall left column */
+  position: sticky;
+  top: calc(64px + var(--space-6));
 }
 
 .form {
@@ -239,19 +252,35 @@
 .success {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-8) 0;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-4);
+  padding: var(--space-9) var(--space-6);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  background: var(--bg-soft);
+  min-height: 300px;
 }
 
 .successIcon {
-  font-size: 1.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
   color: var(--accent);
-  line-height: 1;
+  margin: 0 auto;
 }
 
 .successTitle {
-  font-size: var(--step-2);
+  font-size: var(--step-3);
   font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--fg);
   margin: 0;
 }
@@ -284,6 +313,7 @@
     grid-template-columns: 1fr;
     gap: var(--space-7);
   }
+  .right { position: static; }
   .headline { font-size: var(--step-5); }
 }
 

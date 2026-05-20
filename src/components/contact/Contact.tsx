@@ -31,29 +31,34 @@ export default function Contact() {
 
           {/* ── Left ── */}
           <div className={styles.left}>
-            <h2 className={styles.headline} data-reveal data-reveal-delay="1">
-              Get in <em>touch</em>.
-            </h2>
-            <p className={styles.lede} data-reveal data-reveal-delay="2">
-              Have a project in mind or just want to say hi?
-              Fill out the form or reach me directly.
-            </p>
+            <div>
+              <h2 className={styles.headline} data-reveal data-reveal-delay="1">
+                Get in <em>touch</em>.
+              </h2>
+              <p className={styles.lede} data-reveal data-reveal-delay="2">
+                Have a project in mind or just want to say hi?
+                Fill out the form or reach me directly.
+              </p>
+            </div>
 
-            <ul className={styles.links}>
+            <ul className={styles.list}>
               {LINKS.map((l, i) => (
-                <li key={l.label} data-reveal data-reveal-delay={(((i % 4) + 2)).toString()}>
+                <li
+                  key={l.label}
+                  className={styles.row}
+                  data-reveal
+                  data-reveal-delay={(((i % 4) + 2)).toString()}
+                >
+                  <span className={styles.rowLabel}>{l.label}</span>
                   <a
+                    className={styles.rowValue}
                     href={l.href}
-                    className={styles.linkCard}
                     {...(l.href.startsWith("http") || l.newTab
                       ? { target: "_blank", rel: "noreferrer noopener" }
                       : {})}
                   >
-                    <span className={styles.linkInner}>
-                      <span className={styles.linkLabel}>{l.label}</span>
-                      <span className={styles.linkDisplay}>{l.display}</span>
-                    </span>
-                    <span className={styles.linkArrow} aria-hidden="true">↗</span>
+                    <span className={styles.rowText}>{l.display}</span>
+                    <span className={styles.rowArrow} aria-hidden="true">→</span>
                   </a>
                 </li>
               ))}
@@ -61,15 +66,15 @@ export default function Contact() {
           </div>
 
           {/* ── Right: form ── */}
-          <div className={styles.right} data-reveal data-reveal-delay="2">
+          <div className={styles.right}>
             {state.succeeded ? (
-              <div className={styles.success}>
+              <div className={styles.success} data-reveal>
                 <span className={styles.successIcon} aria-hidden="true">✓</span>
                 <p className={styles.successTitle}>Message sent.</p>
                 <p className={styles.successSub}>I&apos;ll get back to you shortly.</p>
               </div>
             ) : (
-              <form className={styles.form} onSubmit={handleSubmit}>
+              <form className={styles.form} onSubmit={handleSubmit} data-reveal data-reveal-delay="2">
                 <div className={styles.row2}>
                   <div className={styles.field}>
                     <label className={styles.label} htmlFor="cf-name">Name</label>
