@@ -178,7 +178,7 @@ export const PROJECTS: Project[] = [
     tags: ["software"],
     year: 2023,
     role: "Solo",
-    stack: ["React", "TypeScript", "Vite", "Firebase Auth + Firestore"],
+    stack: ["React", "TypeScript", "Vite", "Firebase Auth", "Firestore"],
     frequency: 868,
     amplitude: 5,
     band: "—",
