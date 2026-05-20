@@ -201,6 +201,7 @@
   box-sizing: border-box;
   appearance: none;
   -webkit-appearance: none;
+  color-scheme: dark;
 }
 
 .input::placeholder {
@@ -216,11 +217,15 @@
 
 .input:-webkit-autofill,
 .input:-webkit-autofill:hover,
-.input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px var(--bg-elevated) inset;
-  -webkit-text-fill-color: var(--fg);
-  caret-color: var(--fg);
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  /* CSS vars don't resolve in autofill box-shadow — use hardcoded token values */
+  -webkit-box-shadow: 0 0 0px 1000px #131822 inset;
+  -webkit-text-fill-color: #e2e8f0;
+  caret-color: #e2e8f0;
   transition: background-color 5000s ease-in-out 0s;
+  /* Tell browser this is a dark field so autofill picker matches */
+  color-scheme: dark;
 }
 
 .textarea {
