@@ -40,6 +40,7 @@ export default function Nav() {
     //      reports getBoundingClientRect().top = 0, which collapses the algorithm
     //      onto the last-defined section — Contact).
     let raf = 0;
+    let frame = 0;
     let last: string | null | undefined = undefined;
 
     function update() {
@@ -65,7 +66,8 @@ export default function Nav() {
     }
 
     function loop() {
-      update();
+      // Run scroll-spy every 3rd frame (~20fps) — accurate enough, lighter on CPU
+      if (++frame % 3 === 0) update();
       raf = requestAnimationFrame(loop);
     }
     raf = requestAnimationFrame(loop);

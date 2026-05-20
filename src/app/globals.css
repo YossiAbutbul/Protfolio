@@ -127,6 +127,12 @@ button {
   cursor: pointer;
 }
 
+/* Defer layout/paint for below-fold sections until scroll */
+section:not(#hero) {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+}
+
 hr {
   border: 0;
   border-top: var(--hairline-w) solid var(--hairline);
