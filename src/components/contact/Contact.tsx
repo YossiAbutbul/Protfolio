@@ -23,6 +23,14 @@ const RESET_DELAY = 5000; // ms before form reappears after success
 export default function Contact() {
   const [state, handleSubmit] = useForm(FORMSPREE_ID);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  // Wrap Formspree's handler so the button reacts instantly on click
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    setPending(true);
+    await handleSubmit(e);
+    setPending(false);
+  }
 
   useEffect(() => {
     if (!state.succeeded) return;
@@ -83,7 +91,7 @@ export default function Contact() {
               {/* Form — fades out on success */}
               <form
                 className={styles.form}
-                onSubmit={handleSubmit}
+                onSubmit={onSubmit}
                 data-hidden={showSuccess ? "" : undefined}
                 aria-hidden={showSuccess}
               >
@@ -116,8 +124,8 @@ export default function Contact() {
                 </div>
 
                 <div className={styles.formFooter}>
-                  <button type="submit" className={styles.btnSubmit} disabled={state.submitting}>
-                    {state.submitting ? "Sending…" : <>Send message <span aria-hidden="true">→</span></>}
+                  <button type="submit" className={styles.btnSubmit} disabled={pending}>
+                    {pending ? "Sending…" : <>Send message <span aria-hidden="true">→</span></>}
                   </button>
                 </div>
               </form>
