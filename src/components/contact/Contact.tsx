@@ -3,7 +3,6 @@
 import { useForm, ValidationError } from "@formspree/react";
 import { useEffect, useState } from "react";
 import SectionLabel from "@/components/ui/SectionLabel";
-import FloorNoise from "@/components/ui/FloorNoise";
 import { withBasePath } from "@/lib/env";
 import styles from "./Contact.module.css";
 
@@ -130,7 +129,6 @@ export default function Contact() {
           <span className={styles.footMono}>© {new Date().getFullYear()} Yossi Abutbul</span>
         </footer>
 
-        <FloorNoise />
       </div>
     </section>
   );
