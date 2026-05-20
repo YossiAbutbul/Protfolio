@@ -93,9 +93,7 @@ export default function Contact() {
                       type="text" placeholder="Jane Smith" autoComplete="name" />
                   </div>
                   <div className={styles.field}>
-                    <label className={styles.label} htmlFor="cf-email">
-                      Email <span className={styles.required} aria-hidden="true">*</span>
-                    </label>
+                    <label className={styles.label} htmlFor="cf-email">Email</label>
                     <input id="cf-email" name="email" className={styles.input}
                       type="email" placeholder="hello@example.com" required autoComplete="email" />
                     <ValidationError field="email" prefix="Email" errors={state.errors} className={styles.errMsg} />
