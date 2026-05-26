@@ -10,7 +10,7 @@ interface Stat {
 }
 
 const STATS: Stat[] = [
-  { value: 5,  unit: "+yrs", label: "RF / automation @ Arad" },
+  { value: 5,  unit: "+yrs", label: "RF / automation" },
   { value: 50, unit: "%+",   label: "lab reporting time cut" },
 ];
 
